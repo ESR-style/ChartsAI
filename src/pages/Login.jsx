@@ -4,19 +4,35 @@ import { useAuth } from '../context/AuthContext'
 
 const Login = () => {
   const [credentials, setCredentials] = useState({ username: '', password: '' })
+  const [error, setError] = useState('')
   const { login } = useAuth()
   const navigate = useNavigate()
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    login(credentials)
-    navigate('/')
+    setError('')
+    
+    if (!credentials.username || !credentials.password) {
+      setError('Please enter both username and password')
+      return
+    }
+
+    if (login(credentials)) {
+      navigate('/')
+    } else {
+      setError('Invalid credentials')
+    }
   }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-900">
       <div className="bg-gray-800 p-8 rounded-xl shadow-2xl w-96 border border-gray-700">
         <h1 className="text-3xl font-bold mb-8 text-center text-white">ChartsAI</h1>
+        {error && (
+          <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 rounded text-red-500 text-sm">
+            {error}
+          </div>
+        )}
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <input

@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { BiMessageSquare, BiPlus } from 'react-icons/bi'
-import { FiLogOut } from 'react-icons/fi'
+import { FiLogOut, FiTrash2 } from 'react-icons/fi'
 
-const ChatSidebar = ({ chats, activeChat, onChatSelect, isCollapsed }) => {
+const ChatSidebar = ({ chats, activeChat, onChatSelect, isCollapsed, onDeleteChat }) => {
   const { logout } = useAuth()
 
   return (
@@ -21,14 +21,24 @@ const ChatSidebar = ({ chats, activeChat, onChatSelect, isCollapsed }) => {
           {chats.map(chat => (
             <div
               key={chat.id}
-              className={`p-3 rounded-lg cursor-pointer transition-all flex items-center gap-3 group
+              className={`group p-3 rounded-lg cursor-pointer transition-all flex items-center gap-3
                 ${activeChat === chat.id 
                   ? 'bg-gray-800/70 text-white' 
                   : 'hover:bg-gray-800/40 text-gray-400 hover:text-gray-200'}`}
-              onClick={() => onChatSelect(chat.id)}
             >
-              <BiMessageSquare size={18} className="group-hover:text-gray-200 transition-colors" />
-              <span className="truncate">{chat.title}</span>
+              <div className="flex-1 flex items-center gap-3" onClick={() => onChatSelect(chat.id)}>
+                <BiMessageSquare size={18} className="group-hover:text-gray-200 transition-colors" />
+                <span className="truncate">{chat.title}</span>
+              </div>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDeleteChat(chat.id);
+                }}
+                className="opacity-0 group-hover:opacity-100 p-1 hover:bg-gray-700 rounded transition-all text-gray-400 hover:text-red-400"
+              >
+                <FiTrash2 size={16} />
+              </button>
             </div>
           ))}
         </div>

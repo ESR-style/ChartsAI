@@ -7,9 +7,16 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null)
   
   const login = (credentials) => {
-    // TODO: Integrate with backend
-    setIsAuthenticated(true)
-    setUser({ username: credentials.username })
+    if (credentials.username && credentials.password) {
+      // TODO: Replace with actual API call
+      setIsAuthenticated(true)
+      setUser({ 
+        username: credentials.username,
+        plan: 'free'
+      })
+      return true
+    }
+    return false
   }
 
   const logout = () => {

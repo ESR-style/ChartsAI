@@ -1,20 +1,33 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { useTypewriter } from '../utils/useTypewriter'
 import { BiMicrophone, BiPaperclip, BiSend, BiStop } from 'react-icons/bi'
 import { BsChatLeftDots } from 'react-icons/bs'
 
-const ChatArea = ({ chat, onSendMessage }) => {
+const ChatArea = ({ chat, onSendMessage, isCentered }) => {
   const [input, setInput] = useState('')
   const [isRecording, setIsRecording] = useState(false)
-  const [isCentered, setIsCentered] = useState(true)
+  const [isProcessing, setIsProcessing] = useState(false)
   const fileInputRef = useRef(null)
+  const bottomRef = useRef(null)
 
-  const handleSubmit = (e) => {
+  // Scroll to bottom on new messages
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [chat?.messages])
+
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    if (!input.trim()) return
-    setIsCentered(false)
-    onSendMessage(input)
-    setInput('')
+    if (!input.trim() || isProcessing) return
+
+    try {
+      setIsProcessing(true)
+      await onSendMessage(input)
+      setInput('')
+    } catch (error) {
+      console.error('Failed to send message:', error)
+    } finally {
+      setIsProcessing(false)
+    }
   }
 
   const handleAttachment = () => {
@@ -29,17 +42,17 @@ const ChatArea = ({ chat, onSendMessage }) => {
     }
   }
 
-  if (!chat && isCentered) {
+  if (!chat || isCentered) {
     return (
       <div className="flex-1 flex flex-col bg-[#0a0a0a]">
         <div className="flex-1 flex flex-col items-center justify-center p-4">
           <div className="mb-12 text-center">
-            <BsChatLeftDots size={64} className="mx-auto mb-6 text-gray-700" />
+            <BsChatLeftDots size={64} className="mx-auto mb-6 text-gray-700 animate-pulse" />
             <h2 className="text-3xl font-bold mb-3 bg-gradient-to-r from-blue-500 to-blue-700 bg-clip-text text-transparent">
-              Welcome to ChartsAI
+              How can I help you with your data?
             </h2>
-            <p className="text-gray-500 max-w-md mx-auto">
-              Ask anything about your data and get intelligent visualizations and insights.
+            <p className="text-gray-500 max-w-md mx-auto mb-8">
+              Ask me anything about your data - charts, analysis, predictions, or insights.
             </p>
           </div>
           <form onSubmit={handleSubmit} className="w-full max-w-2xl px-4">
@@ -121,6 +134,7 @@ const ChatArea = ({ chat, onSendMessage }) => {
               </div>
             </div>
           ))}
+          <div ref={bottomRef} />
         </div>
       </div>
 

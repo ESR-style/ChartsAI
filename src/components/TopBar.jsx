@@ -1,12 +1,14 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { HiMenuAlt2 } from 'react-icons/hi'
 import { useAuth } from '../context/AuthContext'
+import ProfileMenu from './ProfileMenu.jsx'
 
 const TopBar = ({ toggleSidebar, isCollapsed }) => {
+  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false)
   const { user } = useAuth()
   
   return (
-    <div className="h-14 bg-[#0a0a0a] border-b border-gray-800/50 flex items-center justify-between px-4">
+    <div className="h-14 bg-[#0a0a0a] border-b border-gray-800/50 flex items-center justify-between px-4 relative">
       <div className="flex items-center gap-4">
         <button
           onClick={toggleSidebar}
@@ -21,9 +23,16 @@ const TopBar = ({ toggleSidebar, isCollapsed }) => {
       
       <div className="flex items-center gap-3">
         <span className="text-gray-400 text-sm">{user?.username || 'User'}</span>
-        <div className="w-8 h-8 rounded-lg bg-gray-800/70 flex items-center justify-center text-white cursor-pointer hover:bg-gray-700 transition-all">
+        <button
+          onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
+          className="w-8 h-8 rounded-lg bg-gray-800/70 flex items-center justify-center text-white cursor-pointer hover:bg-gray-700 transition-all"
+        >
           {user?.username?.[0]?.toUpperCase() || 'U'}
-        </div>
+        </button>
+        <ProfileMenu 
+          isOpen={isProfileMenuOpen} 
+          onClose={() => setIsProfileMenuOpen(false)} 
+        />
       </div>
     </div>
   )
