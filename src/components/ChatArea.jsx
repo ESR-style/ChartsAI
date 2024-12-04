@@ -43,8 +43,14 @@ const ChatArea = ({ chat, onSendMessage, isCentered }) => {
   }
 
   // Get the last assistant message for typewriter effect
-  const lastAssistantMessage = chat?.messages?.filter(m => m.role === 'assistant').pop()
+  const lastAssistantMessage = chat?.messages?.filter(m => m.role === 'assistant' && !m.displayed).pop()
   const { displayedText, isTyping } = useTypewriter(lastAssistantMessage?.content || '')
+
+  useEffect(() => {
+    if (!isTyping && lastAssistantMessage) {
+      lastAssistantMessage.displayed = true
+    }
+  }, [isTyping, lastAssistantMessage])
 
   const renderMessage = (message) => {
     if (!message || !message.content) return null;
