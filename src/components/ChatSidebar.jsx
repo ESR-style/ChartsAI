@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { BiMessageSquare, BiPlus, BiDotsVerticalRounded } from 'react-icons/bi'
 import { FiLogOut, FiTrash2, FiArchive, FiShare2, FiEdit } from 'react-icons/fi'
@@ -6,6 +6,18 @@ import { FiLogOut, FiTrash2, FiArchive, FiShare2, FiEdit } from 'react-icons/fi'
 const ChatSidebar = ({ chats, activeChat, onChatSelect, isCollapsed, onDeleteChat }) => {
   const { logout } = useAuth()
   const [menuOpen, setMenuOpen] = useState(null)
+  const menuRef = useRef(null)
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setMenuOpen(null)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
 
   // TODO: Implement these handlers for backend integration
   const handleArchive = (chatId) => {
@@ -24,7 +36,7 @@ const ChatSidebar = ({ chats, activeChat, onChatSelect, isCollapsed, onDeleteCha
   }
 
   const ChatOptionsMenu = ({ chatId }) => (
-    <div className="absolute right-0 top-full mt-1 w-48 bg-[#111111] border border-gray-800 rounded-lg shadow-xl z-50">
+    <div ref={menuRef} className="absolute right-0 top-full mt-1 w-48 bg-[#111111] border border-gray-800 rounded-lg shadow-xl z-50">
       <div className="py-1">
         <button
           onClick={() => handleRename(chatId)}
@@ -81,13 +93,16 @@ const ChatSidebar = ({ chats, activeChat, onChatSelect, isCollapsed, onDeleteCha
                   ? 'bg-gray-800/70 text-white' 
                   : 'hover:bg-gray-800/40 text-gray-400 hover:text-gray-200'}`}
             >
-              <div className="flex-1 flex items-center gap-3" onClick={() => onChatSelect(chat.id)}>
-                <BiMessageSquare size={18} className="group-hover:text-gray-200 transition-colors" />
-                <span className="truncate">{chat.title}</span>
+              <div 
+                className="flex-1 flex items-center gap-3 min-w-0" 
+                onClick={() => onChatSelect(chat.id)}
+              >
+                <BiMessageSquare size={18} className="flex-shrink-0 group-hover:text-gray-200 transition-colors" />
+                <span className="truncate overflow-hidden">{chat.title}</span>
               </div>
               <button
                 onClick={() => setMenuOpen(menuOpen === chat.id ? null : chat.id)}
-                className="opacity-0 group-hover:opacity-100 p-1 hover:bg-gray-700 rounded transition-all"
+                className="flex-shrink-0 opacity-0 group-hover:opacity-100 p-1 hover:bg-gray-700 rounded transition-all ml-2"
               >
                 <BiDotsVerticalRounded size={18} />
               </button>
