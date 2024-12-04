@@ -6,22 +6,33 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [user, setUser] = useState(null)
   
-  const login = (credentials) => {
+  const login = async (credentials) => {
+    // Temporary: Accept any credentials
     if (credentials.username && credentials.password) {
-      // TODO: Replace with actual API call
       setIsAuthenticated(true)
-      setUser({ 
+      setUser({
         username: credentials.username,
         plan: 'free'
       })
-      return true
+      return { success: true }
     }
-    return false
+    return { success: false, message: 'Please enter both username and password' }
   }
 
-  const logout = () => {
-    setIsAuthenticated(false)
-    setUser(null)
+  const logout = async () => {
+    try {
+      // Add your logout API call here if needed
+      await fetch('/api/auth/logout', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      })
+    } finally {
+      setIsAuthenticated(false)
+      setUser(null)
+      localStorage.removeItem('token')
+    }
   }
 
   return (

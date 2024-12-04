@@ -3,11 +3,15 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { FiLoader } from 'react-icons/fi'
 
-const Login = () => {
-  const [credentials, setCredentials] = useState({ username: '', password: '' })
+const Register = () => {
+  const [formData, setFormData] = useState({
+    username: '',
+    email: '',
+    password: '',
+    confirmPassword: ''
+  })
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
-  const { login } = useAuth()
   const navigate = useNavigate()
 
   const handleSubmit = async (e) => {
@@ -16,17 +20,19 @@ const Login = () => {
     setIsLoading(true)
 
     try {
-      if (!credentials.username || !credentials.password) {
-        throw new Error('Please enter both username and password')
+      if (!formData.username || !formData.email || !formData.password) {
+        throw new Error('Please fill in all fields')
       }
 
-      // Here you can integrate with your backend API
-      const response = await login(credentials)
-      if (response.success) {
-        navigate('/')
-      } else {
-        throw new Error(response.message || 'Invalid credentials')
+      if (formData.password !== formData.confirmPassword) {
+        throw new Error('Passwords do not match')
       }
+
+      // Temporary: Just redirect to login
+      setTimeout(() => {
+        navigate('/login')
+      }, 1500)
+      
     } catch (error) {
       setError(error.message)
     } finally {
@@ -39,9 +45,9 @@ const Login = () => {
       <div className="bg-[#111111] p-8 rounded-xl shadow-2xl w-96 border border-gray-800">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-blue-500 to-blue-700 bg-clip-text text-transparent">
-            ChartsAI
+            Create Account
           </h1>
-          <p className="text-gray-400 text-sm">Sign in to your account</p>
+          <p className="text-gray-400 text-sm">Join ChartsAI today</p>
         </div>
 
         {error && (
@@ -56,8 +62,18 @@ const Login = () => {
             <input
               type="text"
               className="w-full p-3 bg-[#0a0a0a] border border-gray-800 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition duration-200"
-              placeholder="Enter your username"
-              onChange={e => setCredentials({...credentials, username: e.target.value})}
+              placeholder="Choose a username"
+              onChange={e => setFormData({...formData, username: e.target.value})}
+            />
+          </div>
+
+          <div>
+            <label className="text-sm text-gray-400 mb-1 block">Email</label>
+            <input
+              type="email"
+              className="w-full p-3 bg-[#0a0a0a] border border-gray-800 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition duration-200"
+              placeholder="Enter your email"
+              onChange={e => setFormData({...formData, email: e.target.value})}
             />
           </div>
 
@@ -66,8 +82,18 @@ const Login = () => {
             <input
               type="password"
               className="w-full p-3 bg-[#0a0a0a] border border-gray-800 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition duration-200"
-              placeholder="Enter your password"
-              onChange={e => setCredentials({...credentials, password: e.target.value})}
+              placeholder="Create a password"
+              onChange={e => setFormData({...formData, password: e.target.value})}
+            />
+          </div>
+
+          <div>
+            <label className="text-sm text-gray-400 mb-1 block">Confirm Password</label>
+            <input
+              type="password"
+              className="w-full p-3 bg-[#0a0a0a] border border-gray-800 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition duration-200"
+              placeholder="Confirm your password"
+              onChange={e => setFormData({...formData, confirmPassword: e.target.value})}
             />
           </div>
 
@@ -76,24 +102,19 @@ const Login = () => {
             disabled={isLoading}
             className="w-full bg-blue-600 text-white p-3 rounded-lg font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-[#111111] transition duration-200 flex items-center justify-center"
           >
-            {isLoading ? <FiLoader className="animate-spin" size={20} /> : 'Sign in'}
+            {isLoading ? <FiLoader className="animate-spin" size={20} /> : 'Create Account'}
           </button>
         </form>
 
-        <div className="mt-6 flex flex-col items-center gap-4 text-sm text-gray-400">
-          <Link to="/forgot-password" className="text-blue-500 hover:text-blue-400">
-            Forgot password?
+        <div className="mt-6 text-center text-sm text-gray-400">
+          Already have an account?{' '}
+          <Link to="/login" className="text-blue-500 hover:text-blue-400">
+            Sign in
           </Link>
-          <div>
-            Don't have an account?{' '}
-            <Link to="/register" className="text-blue-500 hover:text-blue-400">
-              Create one
-            </Link>
-          </div>
         </div>
       </div>
     </div>
   )
 }
 
-export default Login
+export default Register
