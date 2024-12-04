@@ -1,24 +1,28 @@
-
 import { useState, useEffect } from 'react'
 
-export const useTypewriter = (text, speed = 50) => {
-  const [displayText, setDisplayText] = useState('')
+export const useTypewriter = (text, speed = 30) => {
+  const [displayedText, setDisplayedText] = useState('');
+  const [isTyping, setIsTyping] = useState(true);
 
   useEffect(() => {
-    let i = 0
-    setDisplayText('')
+    if (!text) return;
     
+    setIsTyping(true);
+    setDisplayedText('');
+    
+    let index = 0;
     const timer = setInterval(() => {
-      if (i < text.length) {
-        setDisplayText(prev => prev + text.charAt(i))
-        i++
+      if (index < text.length) {
+        setDisplayedText(prev => prev + text.charAt(index));
+        index++;
       } else {
-        clearInterval(timer)
+        setIsTyping(false);
+        clearInterval(timer);
       }
-    }, speed)
+    }, speed);
 
-    return () => clearInterval(timer)
-  }, [text, speed])
+    return () => clearInterval(timer);
+  }, [text, speed]);
 
-  return displayText
-}
+  return { displayedText, isTyping };
+};

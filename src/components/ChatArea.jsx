@@ -42,6 +42,33 @@ const ChatArea = ({ chat, onSendMessage, isCentered }) => {
     }
   }
 
+  // Get the last assistant message for typewriter effect
+  const lastAssistantMessage = chat?.messages?.filter(m => m.role === 'assistant').pop()
+  const { displayedText, isTyping } = useTypewriter(lastAssistantMessage?.content || '')
+
+  const renderMessage = (message) => {
+    if (!message || !message.content) return null;
+    
+    if (message.role === 'user') {
+      return message.content;
+    }
+
+    // Only apply typewriter effect to the last assistant message of the active chat
+    if (message.id === lastAssistantMessage?.id) {
+      return (
+        <>
+          {displayedText}
+          {isTyping && (
+            <span className="inline-block w-1 h-4 ml-1 bg-gray-400 animate-pulse" />
+          )}
+        </>
+      );
+    }
+
+    // Show full content for previous messages
+    return message.content;
+  };
+
   if (!chat || isCentered) {
     return (
       <div className="flex-1 flex flex-col bg-[#0a0a0a]">
@@ -124,12 +151,12 @@ const ChatArea = ({ chat, onSendMessage, isCentered }) => {
                 }`}>
                   {message.role === 'user' ? 'U' : 'AI'}
                 </div>
-                <div className={`p-4 rounded-xl shadow-lg ${
+                <div className={`p-4 rounded-xl shadow-lg whitespace-pre-wrap ${
                   message.role === 'user' 
                     ? 'bg-blue-600 text-white' 
                     : 'bg-[#111111] text-gray-200'
                 }`}>
-                  {message.content}
+                  {renderMessage(message)}
                 </div>
               </div>
             </div>

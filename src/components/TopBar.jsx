@@ -3,7 +3,7 @@ import { HiMenuAlt2 } from 'react-icons/hi'
 import { useAuth } from '../context/AuthContext'
 import ProfileMenu from './ProfileMenu.jsx'
 
-const TopBar = ({ toggleSidebar, isCollapsed }) => {
+const TopBar = ({ toggleSidebar, isCollapsed, onOpenProfile, onOpenSettings }) => {
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false)
   const { user } = useAuth()
   
@@ -31,7 +31,9 @@ const TopBar = ({ toggleSidebar, isCollapsed }) => {
         </button>
         <ProfileMenu 
           isOpen={isProfileMenuOpen} 
-          onClose={() => setIsProfileMenuOpen(false)} 
+          onClose={() => setIsProfileMenuOpen(false)}
+          onOpenProfile={onOpenProfile}
+          onOpenSettings={onOpenSettings}
         />
       </div>
     </div>

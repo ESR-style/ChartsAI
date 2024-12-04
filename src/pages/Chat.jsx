@@ -3,12 +3,17 @@ import ChatSidebar from '../components/ChatSidebar'
 import ChatArea from '../components/ChatArea'
 import TopBar from '../components/TopBar'
 import { mockChats } from '../utils/mockData'
+import Modal from '../components/Modal'
+import Profile from '../components/Profile'
+import Settings from '../components/Settings'
 
 const Chat = () => {
   const [activeChat, setActiveChat] = useState(null)
   const [chats, setChats] = useState(mockChats)
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false)
   const [isChatCentered, setIsChatCentered] = useState(true)
+  const [isProfileOpen, setIsProfileOpen] = useState(false)
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false)
 
   const handleDeleteChat = (chatId) => {
     try {
@@ -32,17 +37,42 @@ const Chat = () => {
     setIsChatCentered(false)
   }
 
-  const handleSendMessage = (message) => {
+  const handleSendMessage = async (message) => {
     try {
       if (!activeChat) {
+        // Create new chat
         const newChat = {
           id: Date.now(),
           title: message.slice(0, 30) + (message.length > 30 ? '...' : ''),
-          messages: [{ id: 1, role: 'user', content: message }]
-        }
-        setChats(prev => [newChat, ...prev])
-        setActiveChat(newChat.id)
+          messages: [
+            { id: 1, role: 'user', content: message }
+          ]
+        };
+        
+        // Add new chat to state first
+        setChats(prev => [newChat, ...prev]);
+        setActiveChat(newChat.id);
+        setIsChatCentered(false);
+
+        // Add AI response after a short delay
+        setTimeout(() => {
+          setChats(prev => prev.map(chat => {
+            if (chat.id === newChat.id) {
+              return {
+                ...chat,
+                messages: [...chat.messages, {
+                  id: 2,
+                  role: 'assistant',
+                  content: `Analysis of your request: "${message}"\n\n1. Data Overview:\n   - Processing your query\n   - Analyzing patterns\n   - Generating insights\n\n2. Key Findings:\n   - Trend analysis shows positive correlation\n   - 25% increase in relevant metrics\n   - Significant patterns detected\n\nWould you like to see a detailed visualization of these results?`
+                }]
+              };
+            }
+            return chat;
+          }));
+        }, 500); // 500ms delay to show typing effect
+
       } else {
+        // Add user message first
         setChats(prev => prev.map(chat => {
           if (chat.id === activeChat) {
             return {
@@ -52,14 +82,30 @@ const Chat = () => {
                 role: 'user',
                 content: message
               }]
-            }
+            };
           }
-          return chat
-        }))
+          return chat;
+        }));
+
+        // Add AI response after a short delay
+        setTimeout(() => {
+          setChats(prev => prev.map(chat => {
+            if (chat.id === activeChat) {
+              return {
+                ...chat,
+                messages: [...chat.messages, {
+                  id: chat.messages.length + 2,
+                  role: 'assistant',
+                  content: `Analysis of: "${message}"\n\n1. Quick Summary:\n   - Processed request\n   - Found relevant patterns\n   - Generated insights\n\n2. Recommendations:\n   - Consider expanding scope\n   - Monitor key metrics\n   - Implement suggested changes\n\nShall I create a visualization for this data?`
+                }]
+              };
+            }
+            return chat;
+          }));
+        }, 500); // 500ms delay to show typing effect
       }
-      setIsChatCentered(false)
     } catch (error) {
-      console.error('Failed to send message:', error)
+      console.error('Failed to send message:', error);
     }
   }
 
@@ -68,6 +114,8 @@ const Chat = () => {
       <TopBar 
         toggleSidebar={() => setIsSidebarCollapsed(!isSidebarCollapsed)} 
         isCollapsed={isSidebarCollapsed}
+        onOpenProfile={() => setIsProfileOpen(true)}
+        onOpenSettings={() => setIsSettingsOpen(true)}
       />
       <div className="flex flex-1 overflow-hidden">
         <ChatSidebar 
@@ -83,6 +131,21 @@ const Chat = () => {
           isCentered={!activeChat && isChatCentered}
         />
       </div>
+      <Modal 
+        isOpen={isProfileOpen} 
+        onClose={() => setIsProfileOpen(false)}
+        title="Profile"
+      >
+        <Profile />
+      </Modal>
+
+      <Modal 
+        isOpen={isSettingsOpen} 
+        onClose={() => setIsSettingsOpen(false)}
+        title="Settings"
+      >
+        <Settings />
+      </Modal>
     </div>
   )
 }

@@ -1,9 +1,8 @@
 import React, { useEffect, useRef } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { FiLogOut, FiSettings, FiUser } from 'react-icons/fi'
-import { Link } from 'react-router-dom'
 
-const ProfileMenu = ({ isOpen, onClose }) => {
+const ProfileMenu = ({ isOpen, onClose, onOpenProfile, onOpenSettings }) => {
   const { user, logout } = useAuth()
   const menuRef = useRef(null)
 
@@ -34,14 +33,16 @@ const ProfileMenu = ({ isOpen, onClose }) => {
       </div>
       
       <div className="p-2">
-        <Link to="/profile" className="flex items-center gap-3 p-3 text-gray-400 hover:text-white hover:bg-gray-800/50 rounded-lg transition-all">
+        <button onClick={() => { onClose(); onOpenProfile(); }} 
+          className="w-full flex items-center gap-3 p-3 text-gray-400 hover:text-white hover:bg-gray-800/50 rounded-lg transition-all">
           <FiUser size={18} />
           <span>Profile</span>
-        </Link>
-        <Link to="/settings" className="flex items-center gap-3 p-3 text-gray-400 hover:text-white hover:bg-gray-800/50 rounded-lg transition-all">
+        </button>
+        <button onClick={() => { onClose(); onOpenSettings(); }}
+          className="w-full flex items-center gap-3 p-3 text-gray-400 hover:text-white hover:bg-gray-800/50 rounded-lg transition-all">
           <FiSettings size={18} />
           <span>Settings</span>
-        </Link>
+        </button>
         <button
           onClick={logout}
           className="w-full flex items-center gap-3 p-3 text-gray-400 hover:text-white hover:bg-gray-800/50 rounded-lg transition-all"
