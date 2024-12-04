@@ -2,21 +2,29 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --color-dark: #0a0a0a;
+  --color-darker: #050505;
+  --color-sidebar: #111111;
+  --color-accent: #2563eb;
+  --color-accent-hover: #1d4ed8;
+}
+
 @layer utilities {
   .scrollbar-thin::-webkit-scrollbar {
-    width: 4px;
+    width: 3px;
   }
   
   .scrollbar-thin::-webkit-scrollbar-track {
-    background: transparent;
+    background: var(--color-dark);
   }
   
   .scrollbar-thin::-webkit-scrollbar-thumb {
-    background-color: rgb(55, 65, 81);
+    background-color: #333333;
     border-radius: 20px;
   }
   
   .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-    background-color: rgb(75, 85, 99);
+    background-color: #404040;
   }
 }

@@ -7,37 +7,38 @@ const ChatSidebar = ({ chats, activeChat, onChatSelect, isCollapsed }) => {
   const { logout } = useAuth()
 
   return (
-    <div className={`${isCollapsed ? 'w-0' : 'w-80'} bg-gray-900 text-gray-300 flex flex-col h-[calc(100vh-3.5rem)] overflow-hidden transition-all duration-300`}>
+    <div className={`${isCollapsed ? 'w-0' : 'w-80'} bg-[#111111] text-gray-300 flex flex-col h-[calc(100vh-3.5rem)] overflow-hidden transition-all duration-300`}>
       <div className="p-2 flex flex-col h-full">
         <button
-          className="flex items-center gap-3 p-3 rounded-lg border border-gray-700 hover:bg-gray-800 transition-colors w-full mb-4"
+          className="flex items-center gap-3 p-3 rounded-lg border border-gray-800 hover:bg-gray-800/50 transition-colors w-full mb-4 group"
           onClick={() => onChatSelect(null)}
         >
-          <BiPlus size={20} />
-          <span>New Chat</span>
+          <BiPlus size={20} className="text-gray-400 group-hover:text-white transition-colors" />
+          <span className="text-gray-300 group-hover:text-white transition-colors">New Chat</span>
         </button>
         
-        <div className="flex-1 overflow-y-auto space-y-2 scrollbar-thin scrollbar-thumb-gray-700">
+        <div className="flex-1 overflow-y-auto space-y-1 scrollbar-thin scrollbar-thumb-gray-800">
           {chats.map(chat => (
             <div
               key={chat.id}
-              className={`p-3 rounded-lg cursor-pointer transition-colors hover:bg-gray-800 flex items-center gap-3 ${
-                activeChat === chat.id ? 'bg-gray-800 border border-gray-700' : ''
-              }`}
+              className={`p-3 rounded-lg cursor-pointer transition-all flex items-center gap-3 group
+                ${activeChat === chat.id 
+                  ? 'bg-gray-800/70 text-white' 
+                  : 'hover:bg-gray-800/40 text-gray-400 hover:text-gray-200'}`}
               onClick={() => onChatSelect(chat.id)}
             >
-              <BiMessageSquare size={18} />
+              <BiMessageSquare size={18} className="group-hover:text-gray-200 transition-colors" />
               <span className="truncate">{chat.title}</span>
             </div>
           ))}
         </div>
 
-        <div className="border-t border-gray-700 pt-4 mt-4">
+        <div className="border-t border-gray-800/50 pt-4 mt-4">
           <button
-            className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors w-full text-gray-400 hover:text-white"
+            className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800/50 transition-all w-full text-gray-400 hover:text-white group"
             onClick={logout}
           >
-            <FiLogOut size={20} />
+            <FiLogOut size={20} className="group-hover:text-white transition-colors" />
             <span>Logout</span>
           </button>
         </div>

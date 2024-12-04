@@ -31,12 +31,14 @@ const ChatArea = ({ chat, onSendMessage }) => {
 
   if (!chat && isCentered) {
     return (
-      <div className="flex-1 flex flex-col bg-black">
+      <div className="flex-1 flex flex-col bg-[#0a0a0a]">
         <div className="flex-1 flex flex-col items-center justify-center p-4">
-          <div className="mb-12 text-gray-400 text-center">
-            <BsChatLeftDots size={64} className="mx-auto mb-6 opacity-50" />
-            <h2 className="text-3xl font-bold mb-3 text-gray-200">Welcome to ChartsAI</h2>
-            <p className="text-gray-400 max-w-md mx-auto">
+          <div className="mb-12 text-center">
+            <BsChatLeftDots size={64} className="mx-auto mb-6 text-gray-700" />
+            <h2 className="text-3xl font-bold mb-3 bg-gradient-to-r from-blue-500 to-blue-700 bg-clip-text text-transparent">
+              Welcome to ChartsAI
+            </h2>
+            <p className="text-gray-500 max-w-md mx-auto">
               Ask anything about your data and get intelligent visualizations and insights.
             </p>
           </div>
@@ -46,7 +48,9 @@ const ChatArea = ({ chat, onSendMessage }) => {
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                className="w-full p-4 pr-36 bg-gray-900 border border-gray-800 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 shadow-xl transition-all duration-200"
+                className="w-full p-4 pr-36 bg-[#111111] border border-gray-800 rounded-xl text-white placeholder-gray-500 
+                  focus:outline-none focus:border-blue-600/50 focus:ring-1 focus:ring-blue-600/50 shadow-xl 
+                  transition-all duration-200"
                 placeholder="Ask about your data..."
                 autoFocus
               />
@@ -91,29 +95,27 @@ const ChatArea = ({ chat, onSendMessage }) => {
   }
 
   return (
-    <div className="flex-1 flex flex-col bg-black">
-      <div className="flex-1 p-4 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-700">
+    <div className="flex-1 flex flex-col bg-[#0a0a0a]">
+      <div className="flex-1 p-4 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-800">
         <div className="max-w-3xl mx-auto space-y-6">
           {chat?.messages.map(message => (
             <div
               key={message.id}
-              className={`flex ${
-                message.role === 'user' ? 'justify-end' : 'justify-start'
-              }`}
+              className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
             >
               <div className={`flex items-start gap-4 max-w-[80%] group ${
                 message.role === 'user' ? 'flex-row-reverse' : 'flex-row'
               }`}>
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-sm ${
-                  message.role === 'user' ? 'bg-blue-600' : 'bg-gray-700'
+                <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-white text-sm ${
+                  message.role === 'user' ? 'bg-blue-600' : 'bg-gray-800'
                 }`}>
                   {message.role === 'user' ? 'U' : 'AI'}
                 </div>
-                <div className={`p-4 rounded-xl ${
+                <div className={`p-4 rounded-xl shadow-lg ${
                   message.role === 'user' 
                     ? 'bg-blue-600 text-white' 
-                    : 'bg-gray-900 text-gray-100'
-                } shadow-lg transition-all duration-200`}>
+                    : 'bg-[#111111] text-gray-200'
+                }`}>
                   {message.content}
                 </div>
               </div>
@@ -122,13 +124,15 @@ const ChatArea = ({ chat, onSendMessage }) => {
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="p-4 border-t border-gray-800 bg-black">
+      <form onSubmit={handleSubmit} className="p-4 border-t border-gray-800/50 bg-[#0a0a0a]">
         <div className="max-w-3xl mx-auto relative">
           <input
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            className="w-full p-4 pr-36 bg-gray-900 border border-gray-800 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-all duration-200"
+            className="w-full p-4 pr-36 bg-[#111111] border border-gray-800 rounded-xl text-white 
+              placeholder-gray-500 focus:outline-none focus:border-blue-600/50 focus:ring-1 
+              focus:ring-blue-600/50 transition-all duration-200"
             placeholder="Type your message..."
           />
           <div className="absolute right-2 top-2 flex gap-2">
