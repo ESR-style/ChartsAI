@@ -41,17 +41,17 @@ const Register = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#0a0a0a]">
-      <div className="bg-[#111111] p-8 rounded-xl shadow-2xl w-96 border border-gray-800">
+    <div className="min-h-screen flex items-center justify-center bg-[#0f0f0f]">
+      <div className="bg-[#161616] p-8 rounded-xl shadow-2xl w-96 border border-white/10">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-blue-500 to-blue-700 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-gray-200 to-gray-400 bg-clip-text text-transparent">
             Create Account
           </h1>
           <p className="text-gray-400 text-sm">Join ChartsAI today</p>
         </div>
 
         {error && (
-          <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 rounded text-red-500 text-sm">
+          <div className="mb-4 p-3 bg-red-500/5 border border-red-500/10 rounded-lg text-red-400 text-sm">
             {error}
           </div>
         )}
@@ -61,7 +61,10 @@ const Register = () => {
             <label className="text-sm text-gray-400 mb-1 block">Username</label>
             <input
               type="text"
-              className="w-full p-3 bg-[#0a0a0a] border border-gray-800 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition duration-200"
+              className="w-full p-3 bg-[#0f0f0f] border border-white/10 rounded-lg 
+                text-white placeholder-gray-500 focus:outline-none focus:ring-1 
+                focus:ring-white/10 focus:border-white/20
+                transition-all duration-200"
               placeholder="Choose a username"
               onChange={e => setFormData({...formData, username: e.target.value})}
             />
@@ -71,7 +74,10 @@ const Register = () => {
             <label className="text-sm text-gray-400 mb-1 block">Email</label>
             <input
               type="email"
-              className="w-full p-3 bg-[#0a0a0a] border border-gray-800 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition duration-200"
+              className="w-full p-3 bg-[#0f0f0f] border border-white/10 rounded-lg 
+                text-white placeholder-gray-500 focus:outline-none focus:ring-1 
+                focus:ring-white/10 focus:border-white/20
+                transition-all duration-200"
               placeholder="Enter your email"
               onChange={e => setFormData({...formData, email: e.target.value})}
             />
@@ -81,7 +87,10 @@ const Register = () => {
             <label className="text-sm text-gray-400 mb-1 block">Password</label>
             <input
               type="password"
-              className="w-full p-3 bg-[#0a0a0a] border border-gray-800 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition duration-200"
+              className="w-full p-3 bg-[#0f0f0f] border border-white/10 rounded-lg 
+                text-white placeholder-gray-500 focus:outline-none focus:ring-1 
+                focus:ring-white/10 focus:border-white/20
+                transition-all duration-200"
               placeholder="Create a password"
               onChange={e => setFormData({...formData, password: e.target.value})}
             />
@@ -91,7 +100,10 @@ const Register = () => {
             <label className="text-sm text-gray-400 mb-1 block">Confirm Password</label>
             <input
               type="password"
-              className="w-full p-3 bg-[#0a0a0a] border border-gray-800 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition duration-200"
+              className="w-full p-3 bg-[#0f0f0f] border border-white/10 rounded-lg 
+                text-white placeholder-gray-500 focus:outline-none focus:ring-1 
+                focus:ring-white/10 focus:border-white/20
+                transition-all duration-200"
               placeholder="Confirm your password"
               onChange={e => setFormData({...formData, confirmPassword: e.target.value})}
             />
@@ -100,7 +112,7 @@ const Register = () => {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-blue-600 text-white p-3 rounded-lg font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-[#111111] transition duration-200 flex items-center justify-center"
+            className="w-full bg-white/10 text-white p-3 rounded-lg font-medium hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/10 transition duration-200 flex items-center justify-center"
           >
             {isLoading ? <FiLoader className="animate-spin" size={20} /> : 'Create Account'}
           </button>

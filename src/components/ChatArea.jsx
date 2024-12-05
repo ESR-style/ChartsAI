@@ -77,15 +77,19 @@ const ChatArea = ({ chat, onSendMessage, isCentered }) => {
 
   if (!chat || isCentered) {
     return (
-      <div className="flex-1 flex flex-col bg-[#0a0a0a]">
+      <div className="flex-1 flex flex-col bg-[#0f0f0f]">
         <div className="flex-1 flex flex-col items-center justify-center p-4">
-          <div className="mb-12 text-center">
-            <BsChatLeftDots size={64} className="mx-auto mb-6 text-gray-700 animate-pulse" />
-            <h2 className="text-3xl font-bold mb-3 bg-gradient-to-r from-blue-500 to-blue-700 bg-clip-text text-transparent">
-              How can I help you with your data?
+          <div className="mb-12 text-center max-w-2xl mx-auto px-4">
+            <div className="w-20 h-20 mx-auto mb-8 rounded-2xl bg-white/5 
+              flex items-center justify-center border border-white/10">
+              <BsChatLeftDots size={40} className="text-gray-400 animate-pulse" />
+            </div>
+            <h2 className="text-3xl font-bold mb-4 bg-gradient-to-r from-gray-200 to-gray-400 
+              bg-clip-text text-transparent tracking-tight">
+              Welcome to ChartsAI
             </h2>
-            <p className="text-gray-500 max-w-md mx-auto mb-8">
-              Ask me anything about your data - charts, analysis, predictions, or insights.
+            <p className="text-gray-500 text-lg mb-8">
+              Ask me anything about your data - I can help with charts, analysis, predictions, and insights.
             </p>
           </div>
           <form onSubmit={handleSubmit} className="w-full max-w-2xl px-4">
@@ -94,9 +98,10 @@ const ChatArea = ({ chat, onSendMessage, isCentered }) => {
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                className="w-full p-4 pr-36 bg-[#111111] border border-gray-800 rounded-xl text-white placeholder-gray-500 
-                  focus:outline-none focus:border-blue-600/50 focus:ring-1 focus:ring-blue-600/50 shadow-xl 
-                  transition-all duration-200"
+                className="w-full p-4 pl-5 pr-36 bg-[#161616] border border-white/10 rounded-xl 
+                  text-white placeholder-gray-500 ring-[1px] ring-white/0
+                  focus:outline-none focus:border-white/10 focus:ring-white/5
+                  transition-colors duration-200 shadow-sm"
                 placeholder="Ask about your data..."
                 autoFocus
               />
@@ -104,24 +109,26 @@ const ChatArea = ({ chat, onSendMessage, isCentered }) => {
                 <button
                   type="button"
                   onClick={handleAttachment}
-                  className="p-2 text-gray-400 hover:text-white rounded-lg hover:bg-gray-600"
+                  className="p-2 text-gray-400 hover:text-white rounded-lg hover:bg-white/5 
+                    transition-colors"
                 >
                   <BiPaperclip size={20} />
                 </button>
                 <button
                   type="button"
                   onClick={() => setIsRecording(!isRecording)}
-                  className={`p-2 rounded-lg ${
-                    isRecording 
-                      ? 'text-red-500 hover:text-red-600' 
-                      : 'text-gray-400 hover:text-white'
-                  } hover:bg-gray-600`}
+                  className={`p-2 rounded-lg transition-colors
+                    ${isRecording 
+                      ? 'text-red-400 hover:text-red-300 hover:bg-red-500/5' 
+                      : 'text-gray-400 hover:text-white hover:bg-white/5'
+                    }`}
                 >
                   {isRecording ? <BiStop size={20} /> : <BiMicrophone size={20} />}
                 </button>
                 <button
                   type="submit"
-                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-200 flex items-center gap-2"
+                  className="bg-white/10 text-white px-4 py-2 rounded-lg hover:bg-white/20 
+                    transition-all duration-200 flex items-center gap-2"
                 >
                   <BiSend size={20} />
                 </button>
@@ -141,26 +148,30 @@ const ChatArea = ({ chat, onSendMessage, isCentered }) => {
   }
 
   return (
-    <div className="flex-1 flex flex-col bg-[#0a0a0a]">
-      <div className="flex-1 p-4 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-800">
-        <div className="max-w-3xl mx-auto space-y-6">
+    <div className="flex-1 flex flex-col bg-[#0f0f0f]">
+      <div className="flex-1 p-6 overflow-y-auto scrollbar-thin scrollbar-track-transparent 
+        scrollbar-thumb-gray-800/50">
+        <div className="max-w-4xl mx-auto space-y-6">
           {chat?.messages.map(message => (
             <div
               key={message.id}
               className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
             >
-              <div className={`flex items-start gap-4 max-w-[80%] group ${
+              <div className={`flex items-start gap-4 max-w-[85%] group ${
                 message.role === 'user' ? 'flex-row-reverse' : 'flex-row'
               }`}>
-                <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-white text-sm ${
-                  message.role === 'user' ? 'bg-blue-600' : 'bg-gray-800'
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-white 
+                  shadow-lg ${
+                  message.role === 'user' 
+                    ? 'bg-gradient-to-br from-blue-500 to-blue-600' 
+                    : 'bg-gradient-to-br from-gray-700 to-gray-800'
                 }`}>
                   {message.role === 'user' ? 'U' : 'AI'}
                 </div>
-                <div className={`p-4 rounded-xl shadow-lg whitespace-pre-wrap ${
+                <div className={`p-4 rounded-xl shadow-sm whitespace-pre-wrap ${
                   message.role === 'user' 
-                    ? 'bg-blue-600 text-white' 
-                    : 'bg-[#111111] text-gray-200'
+                    ? 'bg-white/10 text-white' 
+                    : 'bg-[#161616] text-gray-200 border border-white/10'
                 }`}>
                   {renderMessage(message)}
                 </div>
@@ -171,15 +182,17 @@ const ChatArea = ({ chat, onSendMessage, isCentered }) => {
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="p-4 border-t border-gray-800/50 bg-[#0a0a0a]">
-        <div className="max-w-3xl mx-auto relative">
+      <form onSubmit={handleSubmit} className="p-6 border-t border-white/10 bg-[#0f0f0f]/90 
+        backdrop-blur-lg">
+        <div className="max-w-4xl mx-auto relative">
           <input
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            className="w-full p-4 pr-36 bg-[#111111] border border-gray-800 rounded-xl text-white 
-              placeholder-gray-500 focus:outline-none focus:border-blue-600/50 focus:ring-1 
-              focus:ring-blue-600/50 transition-all duration-200"
+            className="w-full p-4 pl-5 pr-36 bg-[#161616] border border-white/10 rounded-xl 
+              text-white placeholder-gray-500 ring-[1px] ring-white/0
+              focus:outline-none focus:border-white/10 focus:ring-white/5
+              transition-colors duration-200 shadow-sm"
             placeholder="Type your message..."
           />
           <div className="absolute right-2 top-2 flex gap-2">

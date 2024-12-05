@@ -102,7 +102,7 @@ const Chat = () => {
             }
             return chat;
           }));
-        }, 500); // 500ms delay to show typing effect
+        }, 200); // 500ms delay to show typing effect
       }
     } catch (error) {
       console.error('Failed to send message:', error);
