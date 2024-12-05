@@ -3,6 +3,10 @@ import { useTypewriter } from '../utils/useTypewriter'
 import { BiMicrophone, BiPaperclip, BiSend, BiStop } from 'react-icons/bi'
 import { BsChatLeftDots } from 'react-icons/bs'
 
+// TODO: Import file upload and voice recording services when ready
+// import { uploadService } from '../services/uploadService';
+// import { voiceService } from '../services/voiceService';
+
 const ChatArea = ({ chat, onSendMessage, isCentered }) => {
   const [input, setInput] = useState('')
   const [isRecording, setIsRecording] = useState(false)
@@ -34,11 +38,39 @@ const ChatArea = ({ chat, onSendMessage, isCentered }) => {
     fileInputRef.current?.click()
   }
 
-  const handleFileChange = (e) => {
+  const handleFileChange = async (e) => {
     const file = e.target.files?.[0]
     if (file) {
-      // TODO: Handle file upload
-      console.log('File selected:', file)
+      try {
+        // TODO: Replace with actual file upload
+        // const uploadedFile = await uploadService.uploadFile(file);
+        // const analysisResult = await uploadService.analyzeFile(uploadedFile.id);
+        // onSendMessage(`Analyzing file: ${file.name}\n${analysisResult}`);
+        
+        // Temporary mock implementation
+        onSendMessage(`Analyzing file: ${file.name}\nMock analysis result...`);
+      } catch (error) {
+        console.error('File upload failed:', error);
+      }
+    }
+  }
+
+  const handleVoiceRecording = async () => {
+    try {
+      if (isRecording) {
+        setIsRecording(false);
+        // TODO: Implement voice recording stop and processing
+        // const audioData = await voiceService.stopRecording();
+        // const transcription = await voiceService.transcribe(audioData);
+        // setInput(transcription);
+      } else {
+        // TODO: Implement voice recording start
+        // await voiceService.startRecording();
+        setIsRecording(true);
+      }
+    } catch (error) {
+      console.error('Voice recording error:', error);
+      setIsRecording(false);
     }
   }
 
@@ -116,7 +148,7 @@ const ChatArea = ({ chat, onSendMessage, isCentered }) => {
                 </button>
                 <button
                   type="button"
-                  onClick={() => setIsRecording(!isRecording)}
+                  onClick={handleVoiceRecording}
                   className={`p-2 rounded-lg transition-colors
                     ${isRecording 
                       ? 'text-red-400 hover:text-red-300 hover:bg-red-500/5' 
@@ -205,7 +237,7 @@ const ChatArea = ({ chat, onSendMessage, isCentered }) => {
             </button>
             <button
               type="button"
-              onClick={() => setIsRecording(!isRecording)}
+              onClick={handleVoiceRecording}
               className={`p-2 rounded-lg ${
                 isRecording 
                   ? 'text-red-500 hover:text-red-600' 

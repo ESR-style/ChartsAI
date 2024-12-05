@@ -7,6 +7,9 @@ import Modal from '../components/Modal'
 import Profile from '../components/Profile'
 import Settings from '../components/Settings'
 
+// TODO: Import API services when backend is ready
+// import { chatService } from '../services/chatService';
+
 const Chat = () => {
   const [activeChat, setActiveChat] = useState(null)
   const [chats, setChats] = useState(mockChats)
@@ -15,8 +18,25 @@ const Chat = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false)
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
 
-  const handleDeleteChat = (chatId) => {
+  // TODO: Fetch chats from backend when ready
+  useEffect(() => {
+    const fetchChats = async () => {
+      try {
+        // const response = await chatService.getChats();
+        // setChats(response.data);
+        setChats(mockChats); // Using mock data for now
+      } catch (error) {
+        console.error('Failed to fetch chats:', error);
+      }
+    };
+
+    fetchChats();
+  }, []);
+
+  const handleDeleteChat = async (chatId) => {
     try {
+      // TODO: Integrate with backend
+      // await chatService.deleteChat(chatId);
       setChats(prev => prev.filter(chat => chat.id !== chatId))
       if (activeChat === chatId) {
         setActiveChat(null)
@@ -40,7 +60,8 @@ const Chat = () => {
   const handleSendMessage = async (message) => {
     try {
       if (!activeChat) {
-        // Create new chat
+        // TODO: Replace with actual API call
+        // const newChat = await chatService.createChat(message);
         const newChat = {
           id: Date.now(),
           title: message.slice(0, 30) + (message.length > 30 ? '...' : ''),
@@ -54,8 +75,10 @@ const Chat = () => {
         setActiveChat(newChat.id);
         setIsChatCentered(false);
 
-        // Add AI response after a short delay
+        // TODO: Replace setTimeout with actual API response
         setTimeout(() => {
+          // Simulating AI response
+          // Will be replaced with actual API response
           setChats(prev => prev.map(chat => {
             if (chat.id === newChat.id) {
               return {
@@ -72,6 +95,9 @@ const Chat = () => {
         }, 500); // 500ms delay to show typing effect
 
       } else {
+        // TODO: Replace with actual API call
+        // await chatService.sendMessage(activeChat, message);
+        
         // Add user message first
         setChats(prev => prev.map(chat => {
           if (chat.id === activeChat) {
@@ -102,7 +128,7 @@ const Chat = () => {
             }
             return chat;
           }));
-        }, 200); // 500ms delay to show typing effect
+        }, 500); // 500ms delay to show typing effect
       }
     } catch (error) {
       console.error('Failed to send message:', error);

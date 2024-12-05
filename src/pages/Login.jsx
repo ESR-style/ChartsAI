@@ -20,7 +20,7 @@ const Login = () => {
         throw new Error('Please enter both username and password')
       }
 
-      // Here you can integrate with your backend API
+      // integrate with  backend API
       const response = await login(credentials)
       if (response.success) {
         navigate('/')
