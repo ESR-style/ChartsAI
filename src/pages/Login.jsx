@@ -55,7 +55,7 @@ const Login = () => {
             <label className="text-sm text-gray-400 mb-1 block">Username</label>
             <input
               type="text"
-              className="w-full p-3 bg-[#0f0f0f] border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-white/10 focus:border-white/20 transition-all duration-200"
+              className="w-full p-3 bg-[#0f0f0f] border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-white/10 focus:border-white/20"
               placeholder="Enter your username"
               onChange={e => setCredentials({...credentials, username: e.target.value})}
             />
@@ -65,7 +65,7 @@ const Login = () => {
             <label className="text-sm text-gray-400 mb-1 block">Password</label>
             <input
               type="password"
-              className="w-full p-3 bg-[#0a0a0a] border border-gray-800 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition duration-200"
+              className="w-full p-3 bg-[#0f0f0f] border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-white/10 focus:border-white/20"
               placeholder="Enter your password"
               onChange={e => setCredentials({...credentials, password: e.target.value})}
             />

@@ -99,9 +99,9 @@ const ChatArea = ({ chat, onSendMessage, isCentered }) => {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 className="w-full p-4 pl-5 pr-36 bg-[#161616] border border-white/10 rounded-xl 
-                  text-white placeholder-gray-500 ring-[1px] ring-white/0
-                  focus:outline-none focus:border-white/10 focus:ring-white/5
-                  transition-colors duration-200 shadow-sm"
+                  text-white placeholder-gray-500
+                  focus:outline-none focus:border-white/20 focus:ring-2 
+                  focus:ring-white/20"
                 placeholder="Ask about your data..."
                 autoFocus
               />
@@ -190,9 +190,9 @@ const ChatArea = ({ chat, onSendMessage, isCentered }) => {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             className="w-full p-4 pl-5 pr-36 bg-[#161616] border border-white/10 rounded-xl 
-              text-white placeholder-gray-500 ring-[1px] ring-white/0
-              focus:outline-none focus:border-white/10 focus:ring-white/5
-              transition-colors duration-200 shadow-sm"
+              text-white placeholder-gray-500
+              focus:outline-none focus:border-white/20 focus:ring-2 
+              focus:ring-white/20"
             placeholder="Type your message..."
           />
           <div className="absolute right-2 top-2 flex gap-2">

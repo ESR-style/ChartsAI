@@ -63,8 +63,7 @@ const Register = () => {
               type="text"
               className="w-full p-3 bg-[#0f0f0f] border border-white/10 rounded-lg 
                 text-white placeholder-gray-500 focus:outline-none focus:ring-1 
-                focus:ring-white/10 focus:border-white/20
-                transition-all duration-200"
+                focus:ring-white/10 focus:border-white/20"
               placeholder="Choose a username"
               onChange={e => setFormData({...formData, username: e.target.value})}
             />
@@ -76,8 +75,7 @@ const Register = () => {
               type="email"
               className="w-full p-3 bg-[#0f0f0f] border border-white/10 rounded-lg 
                 text-white placeholder-gray-500 focus:outline-none focus:ring-1 
-                focus:ring-white/10 focus:border-white/20
-                transition-all duration-200"
+                focus:ring-white/10 focus:border-white/20"
               placeholder="Enter your email"
               onChange={e => setFormData({...formData, email: e.target.value})}
             />
@@ -89,8 +87,7 @@ const Register = () => {
               type="password"
               className="w-full p-3 bg-[#0f0f0f] border border-white/10 rounded-lg 
                 text-white placeholder-gray-500 focus:outline-none focus:ring-1 
-                focus:ring-white/10 focus:border-white/20
-                transition-all duration-200"
+                focus:ring-white/10 focus:border-white/20"
               placeholder="Create a password"
               onChange={e => setFormData({...formData, password: e.target.value})}
             />
@@ -102,8 +99,7 @@ const Register = () => {
               type="password"
               className="w-full p-3 bg-[#0f0f0f] border border-white/10 rounded-lg 
                 text-white placeholder-gray-500 focus:outline-none focus:ring-1 
-                focus:ring-white/10 focus:border-white/20
-                transition-all duration-200"
+                focus:ring-white/10 focus:border-white/20"
               placeholder="Confirm your password"
               onChange={e => setFormData({...formData, confirmPassword: e.target.value})}
             />
