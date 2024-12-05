@@ -22,15 +22,15 @@ const Modal = ({ isOpen, onClose, children, title }) => {
     <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
       <div 
         ref={modalRef} 
-        className="bg-[#111111] rounded-lg w-full max-w-3xl max-h-[90vh] overflow-y-auto text-gray-100
+        className="bg-dark-100 rounded-lg w-full max-w-3xl max-h-[90vh] overflow-y-auto text-gray-100
           scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800/40
           scrollbar-thumb-rounded-full scrollbar-track-rounded-full"
       >
-        <div className="flex justify-between items-center p-6 border-b border-gray-800 sticky top-0 bg-[#111111] backdrop-blur-sm backdrop-filter z-10">
+        <div className="flex justify-between items-center p-6 border-b border-white/10 sticky top-0 bg-dark-100 backdrop-blur-sm backdrop-filter z-10">
           <h2 className="text-2xl font-bold text-white">{title}</h2>
           <button 
             onClick={onClose} 
-            className="text-gray-400 hover:text-white transition-colors p-2 hover:bg-gray-800/50 rounded-full"
+            className="text-gray-400 hover:text-white transition-colors p-2 hover:bg-white/5 rounded-full"
           >
             ✕
           </button>

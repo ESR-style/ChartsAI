@@ -19,14 +19,14 @@ const Settings = () => {
     <div className="space-y-8">
       <SettingSection icon={FiBell} title="Notifications">
         <div className="space-y-3">
-          <label className="flex items-center justify-between p-3 bg-gray-800/30 rounded-lg group hover:bg-gray-800/50 transition-colors">
+          <label className="flex items-center justify-between p-3 bg-dark-200 rounded-lg group hover:bg-white/5 transition-colors">
             <div className="space-y-1">
               <div className="font-medium">Push Notifications</div>
               <div className="text-sm text-gray-400">Get notified about new messages</div>
             </div>
             <input type="checkbox" className="form-checkbox bg-gray-800 rounded" />
           </label>
-          <label className="flex items-center justify-between p-3 bg-gray-800/30 rounded-lg group hover:bg-gray-800/50 transition-colors">
+          <label className="flex items-center justify-between p-3 bg-dark-200 rounded-lg group hover:bg-white/5 transition-colors">
             <div className="space-y-1">
               <div className="font-medium">Email Notifications</div>
               <div className="text-sm text-gray-400">Receive email updates</div>
@@ -38,7 +38,7 @@ const Settings = () => {
 
       <SettingSection icon={FiMoon} title="Appearance">
         <div className="space-y-3">
-          <label className="flex items-center justify-between p-3 bg-gray-800/30 rounded-lg group hover:bg-gray-800/50 transition-colors">
+          <label className="flex items-center justify-between p-3 bg-dark-200 rounded-lg group hover:bg-white/5 transition-colors">
             <div className="space-y-1">
               <div className="font-medium">Dark Mode</div>
               <div className="text-sm text-gray-400">Toggle dark/light theme</div>
@@ -49,7 +49,7 @@ const Settings = () => {
       </SettingSection>
 
       <SettingSection icon={FiCreditCard} title="Subscription">
-        <div className="bg-gray-800/30 p-4 rounded-lg space-y-3">
+        <div className="bg-dark-200 p-4 rounded-lg space-y-3">
           <div className="flex justify-between items-center">
             <div>
               <div className="text-lg font-medium">{user?.plan || 'Free'} Plan</div>

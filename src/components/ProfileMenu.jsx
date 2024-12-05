@@ -19,8 +19,8 @@ const ProfileMenu = ({ isOpen, onClose, onOpenProfile, onOpenSettings }) => {
   if (!isOpen) return null
 
   return (
-    <div ref={menuRef} className="absolute right-0 top-14 w-64 bg-[#111111] border border-gray-800 rounded-lg shadow-xl z-50">
-      <div className="p-4 border-b border-gray-800">
+    <div ref={menuRef} className="absolute right-0 top-14 w-64 bg-dark-100 border border-white/10 rounded-lg shadow-xl z-50">
+      <div className="p-4 border-b border-white/10">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-lg bg-blue-600 flex items-center justify-center text-white font-medium">
             {user?.username?.[0]?.toUpperCase()}
@@ -34,7 +34,7 @@ const ProfileMenu = ({ isOpen, onClose, onOpenProfile, onOpenSettings }) => {
       
       <div className="p-2">
         <button onClick={() => { onClose(); onOpenProfile(); }} 
-          className="w-full flex items-center gap-3 p-3 text-gray-400 hover:text-white hover:bg-gray-800/50 rounded-lg transition-all">
+          className="w-full flex items-center gap-3 p-3 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition-all">
           <FiUser size={18} />
           <span>Profile</span>
         </button>

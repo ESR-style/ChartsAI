@@ -14,7 +14,7 @@ const Profile = () => {
           <div className="w-24 h-24 rounded-lg bg-blue-600 flex items-center justify-center text-3xl font-medium">
             {user?.username?.[0]?.toUpperCase()}
           </div>
-          <button className="absolute bottom-0 right-0 p-2 bg-gray-800 rounded-full hover:bg-gray-700 transition-colors">
+          <button className="absolute bottom-0 right-0 p-2 bg-dark-200 rounded-full hover:bg-white/10 transition-colors">
             <FiCamera size={16} />
           </button>
         </div>
@@ -33,7 +33,7 @@ const Profile = () => {
               type="text" 
               defaultValue={user?.username}
               disabled={!isEditing}
-              className="w-full bg-gray-800/50 rounded-lg p-3 border border-gray-700 focus:border-blue-500 transition-colors disabled:opacity-50"
+              className="w-full bg-dark-200 rounded-lg p-3 border border-white/10 focus:border-blue-500 transition-colors disabled:opacity-50"
             />
           </div>
           <div className="space-y-2">
@@ -42,7 +42,7 @@ const Profile = () => {
               type="email" 
               defaultValue={user?.email}
               disabled={!isEditing}
-              className="w-full bg-gray-800/50 rounded-lg p-3 border border-gray-700 focus:border-blue-500 transition-colors disabled:opacity-50"
+              className="w-full bg-dark-200 rounded-lg p-3 border border-white/10 focus:border-blue-500 transition-colors disabled:opacity-50"
             />
           </div>
         </div>
@@ -64,12 +64,12 @@ const Profile = () => {
       </div>
 
       {/* Security Section */}
-      <div className="pt-6 border-t border-gray-800">
+      <div className="pt-6 border-t border-white/10">
         <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
           <FiShield className="text-blue-500" />
           <span>Security</span>
         </h3>
-        <button className="w-full p-3 bg-gray-800/50 rounded-lg hover:bg-gray-800 transition-colors text-left flex items-center justify-between">
+        <button className="w-full p-3 bg-dark-200 rounded-lg hover:bg-white/5 transition-colors text-left flex items-center justify-between">
           <div className="space-y-1">
             <div className="font-medium">Change Password</div>
             <div className="text-sm text-gray-400">Update your password</div>
@@ -79,7 +79,7 @@ const Profile = () => {
       </div>
 
       {/* Danger Zone */}
-      <div className="pt-6 border-t border-gray-800">
+      <div className="pt-6 border-t border-white/10">
         <h3 className="text-lg font-semibold mb-4 flex items-center gap-2 text-red-500">
           <FiAlertCircle />
           <span>Danger Zone</span>
