@@ -77,7 +77,7 @@ const ChatArea = ({ chat, onSendMessage, isCentered }) => {
 
   if (!chat || isCentered) {
     return (
-      <div className="flex-1 flex flex-col bg-[#0f0f0f]">
+      <div className="flex-1 flex flex-col">
         <div className="flex-1 flex flex-col items-center justify-center p-4">
           <div className="mb-12 text-center max-w-2xl mx-auto px-4">
             <div className="w-20 h-20 mx-auto mb-8 rounded-2xl bg-white/5 
@@ -148,13 +148,13 @@ const ChatArea = ({ chat, onSendMessage, isCentered }) => {
   }
 
   return (
-    <div className="flex-1 flex flex-col bg-[#0f0f0f]">
+    <div className="flex-1 flex flex-col">
       <div className="flex-1 p-6 overflow-y-auto scrollbar-thin scrollbar-track-transparent 
         scrollbar-thumb-gray-800/50">
         <div className="max-w-4xl mx-auto space-y-6">
           {chat?.messages.map(message => (
             <div
-              key={message.id}
+              key={`${message.id}-${message.role}`} // Add role to ensure uniqueness
               className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
             >
               <div className={`flex items-start gap-4 max-w-[85%] group ${

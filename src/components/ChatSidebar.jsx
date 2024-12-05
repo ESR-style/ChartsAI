@@ -94,9 +94,8 @@ const ChatSidebar = ({ chats, activeChat, onChatSelect, isCollapsed, onDeleteCha
   );
 
   return (
-    <div className={`${isCollapsed ? 'w-0' : 'w-80'} bg-[#0f0f0f] 
-      text-gray-300 flex flex-col h-[calc(100vh-4rem)] overflow-hidden transition-all duration-300
-      border-r border-white/10`}>
+    <div className={`w-80 text-gray-300 flex flex-col h-[calc(100vh-4rem)] 
+      overflow-hidden border-r border-white/10`}>
       <div className="p-4 flex flex-col h-full">
         <button
           className="flex items-center gap-3 p-4 rounded-xl 
@@ -136,11 +135,11 @@ const ChatSidebar = ({ chats, activeChat, onChatSelect, isCollapsed, onDeleteCha
                     e.stopPropagation();
                     setMenuOpen(menuOpen === chat.id ? null : chat.id);
                   }}
-                  className="flex-shrink-0 opacity-0 group-hover:opacity-100 p-1.5 
+                  className="flex-shrink-0 md:opacity-0 md:group-hover:opacity-100 p-2.5 
                     hover:bg-indigo-800/30 rounded-lg transition-all ml-2
-                    focus:opacity-100 outline-none"
+                    focus:opacity-100 outline-none touch-manipulation"
                 >
-                  <BiDotsVerticalRounded size={18} />
+                  <BiDotsVerticalRounded size={20} />
                 </button>
               </div>
               {menuOpen === chat.id && (

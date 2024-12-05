@@ -110,21 +110,41 @@ const Chat = () => {
   }
 
   return (
-    <div className="flex flex-col h-screen bg-black">
+    <div className="flex flex-col h-screen bg-[#0f0f0f]">
       <TopBar 
         toggleSidebar={() => setIsSidebarCollapsed(!isSidebarCollapsed)} 
         isCollapsed={isSidebarCollapsed}
         onOpenProfile={() => setIsProfileOpen(true)}
         onOpenSettings={() => setIsSettingsOpen(true)}
       />
-      <div className="flex flex-1 overflow-hidden">
-        <ChatSidebar 
-          chats={chats}
-          activeChat={activeChat}
-          onChatSelect={id => id === null ? handleNewChat() : handleSelectChat(id)}
-          isCollapsed={isSidebarCollapsed}
-          onDeleteChat={handleDeleteChat}
-        />
+      <div className="flex flex-1 overflow-hidden relative bg-[#0f0f0f]">
+        {/* Mobile overlay background - only show on mobile */}
+        {!isSidebarCollapsed && (
+          <div 
+            className="fixed inset-0 bg-black/50 z-30 md:hidden"
+            onClick={() => setIsSidebarCollapsed(true)}
+          />
+        )}
+        <div className={`${
+          !isSidebarCollapsed ? 'translate-x-0' : '-translate-x-full'
+        } absolute md:relative z-50 md:z-auto transition-transform duration-300 ease-in-out bg-[#0f0f0f]`}>
+          <ChatSidebar 
+            chats={chats}
+            activeChat={activeChat}
+            onChatSelect={id => {
+              if (id === null) handleNewChat();
+              else {
+                handleSelectChat(id);
+                // Only close sidebar on mobile
+                if (window.innerWidth < 768) {
+                  setIsSidebarCollapsed(true);
+                }
+              }
+            }}
+            isCollapsed={isSidebarCollapsed}
+            onDeleteChat={handleDeleteChat}
+          />
+        </div>
         <ChatArea 
           chat={activeChat ? chats.find(c => c.id === activeChat) : null}
           onSendMessage={handleSendMessage}
