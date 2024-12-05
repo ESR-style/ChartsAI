@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { useTypewriter } from '../utils/useTypewriter'
 import { BiMicrophone, BiPaperclip, BiSend, BiStop } from 'react-icons/bi'
 import { BsChatLeftDots } from 'react-icons/bs'
+import TypingEffect from './TypingEffect'
 
 // TODO: Import file upload and voice recording services when ready
 // import { uploadService } from '../services/uploadService';
@@ -74,16 +74,6 @@ const ChatArea = ({ chat, onSendMessage, isCentered }) => {
     }
   }
 
-  // Get the last assistant message for typewriter effect
-  const lastAssistantMessage = chat?.messages?.filter(m => m.role === 'assistant' && !m.displayed).pop()
-  const { displayedText, isTyping } = useTypewriter(lastAssistantMessage?.content || '')
-
-  useEffect(() => {
-    if (!isTyping && lastAssistantMessage) {
-      lastAssistantMessage.displayed = true
-    }
-  }, [isTyping, lastAssistantMessage])
-
   const renderMessage = (message) => {
     if (!message || !message.content) return null;
     
@@ -91,15 +81,18 @@ const ChatArea = ({ chat, onSendMessage, isCentered }) => {
       return message.content;
     }
 
-    // Only apply typewriter effect to the last assistant message of the active chat
-    if (message.id === lastAssistantMessage?.id) {
+    // Only apply typing effect to the last assistant message
+    const isLastAssistantMessage = message === chat.messages
+      .filter(m => m.role === 'assistant')
+      .pop();
+
+    if (isLastAssistantMessage && !message.displayed) {
       return (
-        <>
-          {displayedText}
-          {isTyping && (
-            <span className="inline-block w-1 h-4 ml-1 bg-gray-400 animate-pulse" />
-          )}
-        </>
+        <TypingEffect 
+          text={message.content}
+          onComplete={() => { message.displayed = true }}
+          className="whitespace-pre-wrap"
+        />
       );
     }
 
