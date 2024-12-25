@@ -2,31 +2,31 @@ import React, { useState, useEffect } from 'react'
 import ChatSidebar from '../components/ChatSidebar'
 import ChatArea from '../components/ChatArea'
 import TopBar from '../components/TopBar'
-import { mockChats } from '../utils/mockData'
 import Modal from '../components/Modal'
 import Profile from '../components/Profile'
 import Settings from '../components/Settings'
-
-// TODO: Import API services when backend is ready
-// import { chatService } from '../services/chatService';
+import { chatService } from '../services/chatService'
 
 const Chat = () => {
   const [activeChat, setActiveChat] = useState(null)
-  const [chats, setChats] = useState(mockChats)
+  const [chats, setChats] = useState([]) // Initialize with empty array instead of mockChats
+  const [isLoading, setIsLoading] = useState(true) // Add loading state
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false)
   const [isChatCentered, setIsChatCentered] = useState(true)
   const [isProfileOpen, setIsProfileOpen] = useState(false)
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
 
-  // TODO: Fetch chats from backend when ready
+  // Replace mock data fetch with API call
   useEffect(() => {
     const fetchChats = async () => {
       try {
-        // const response = await chatService.getChats();
-        // setChats(response.data);
-        setChats(mockChats); // Using mock data for now
+        setIsLoading(true);
+        const threads = await chatService.getAllThreads();
+        setChats(threads);
       } catch (error) {
         console.error('Failed to fetch chats:', error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -35,17 +35,16 @@ const Chat = () => {
 
   const handleDeleteChat = async (chatId) => {
     try {
-      // TODO: Integrate with backend
-      // await chatService.deleteChat(chatId);
-      setChats(prev => prev.filter(chat => chat.id !== chatId))
+      await chatService.deleteThread(chatId);
+      setChats(prev => prev.filter(chat => chat.id !== chatId));
       if (activeChat === chatId) {
-        setActiveChat(null)
-        setIsChatCentered(true)
+        setActiveChat(null);
+        setIsChatCentered(true);
       }
     } catch (error) {
-      console.error('Failed to delete chat:', error)
+      console.error('Failed to delete chat:', error);
     }
-  }
+  };
 
   const handleNewChat = () => {
     setActiveChat(null)
@@ -60,75 +59,43 @@ const Chat = () => {
   const handleSendMessage = async (message) => {
     try {
       if (!activeChat) {
-        // TODO: Replace with actual API call
-        // const newChat = await chatService.createChat(message);
-        const newChat = {
-          id: Date.now(),
-          title: message.slice(0, 30) + (message.length > 30 ? '...' : ''),
-          messages: [
-            { id: 1, role: 'user', content: message }
-          ]
+        // Create new thread first
+        const newThread = await chatService.createThread(message.slice(0, 30));
+        
+        // Send message to new thread and get both user message and AI response
+        const [userMessage, aiResponse] = await chatService.sendMessage(
+          newThread.id, 
+          message, 
+          'user'
+        );
+        
+        // Add new thread with both messages
+        const threadWithMessages = {
+          ...newThread,
+          messages: [userMessage, aiResponse]
         };
         
-        // Add new chat to state first
-        setChats(prev => [newChat, ...prev]);
-        setActiveChat(newChat.id);
+        setChats(prev => [threadWithMessages, ...prev]);
+        setActiveChat(newThread.id);
         setIsChatCentered(false);
-
-        // TODO: Replace setTimeout with actual API response
-        setTimeout(() => {
-          // Simulating AI response
-          // Will be replaced with actual API response
-          setChats(prev => prev.map(chat => {
-            if (chat.id === newChat.id) {
-              return {
-                ...chat,
-                messages: [...chat.messages, {
-                  id: 2,
-                  role: 'assistant',
-                  content: `Analysis of your request: "${message}"\n\n1. Data Overview:\n   - Processing your query\n   - Analyzing patterns\n   - Generating insights\n\n2. Key Findings:\n   - Trend analysis shows positive correlation\n   - 25% increase in relevant metrics\n   - Significant patterns detected\n\nWould you like to see a detailed visualization of these results?`
-                }]
-              };
-            }
-            return chat;
-          }));
-        }, 500); // 500ms delay to show typing effect
-
       } else {
-        // TODO: Replace with actual API call
-        // await chatService.sendMessage(activeChat, message);
+        // Send message to existing thread
+        const [userMessage, aiResponse] = await chatService.sendMessage(
+          activeChat, 
+          message, 
+          'user'
+        );
         
-        // Add user message first
+        // Update existing thread with both new messages
         setChats(prev => prev.map(chat => {
           if (chat.id === activeChat) {
             return {
               ...chat,
-              messages: [...chat.messages, {
-                id: chat.messages.length + 1,
-                role: 'user',
-                content: message
-              }]
+              messages: [...chat.messages, userMessage, aiResponse]
             };
           }
           return chat;
         }));
-
-        // Add AI response after a short delay
-        setTimeout(() => {
-          setChats(prev => prev.map(chat => {
-            if (chat.id === activeChat) {
-              return {
-                ...chat,
-                messages: [...chat.messages, {
-                  id: chat.messages.length + 2,
-                  role: 'assistant',
-                  content: `Analysis of: "${message}"\n\n1. Quick Summary:\n   - Processed request\n   - Found relevant patterns\n   - Generated insights\n\n2. Recommendations:\n   - Consider expanding scope\n   - Monitor key metrics\n   - Implement suggested changes\n\nShall I create a visualization for this data?`
-                }]
-              };
-            }
-            return chat;
-          }));
-        }, 500); // 500ms delay to show typing effect
       }
     } catch (error) {
       console.error('Failed to send message:', error);
@@ -156,6 +123,7 @@ const Chat = () => {
         } absolute md:relative z-50 md:z-auto transition-transform duration-300 ease-in-out bg-[#0f0f0f]`}>
           <ChatSidebar 
             chats={chats}
+            isLoading={isLoading}
             activeChat={activeChat}
             onChatSelect={id => {
               if (id === null) handleNewChat();

@@ -77,14 +77,15 @@ const ChatArea = ({ chat, onSendMessage, isCentered }) => {
   const renderMessage = (message) => {
     if (!message || !message.content) return null;
     
-    if (message.role === 'user') {
+    // For user messages, just return the content
+    if (message.sender === 'user') {
       return message.content;
     }
 
     // Only apply typing effect to the last assistant message
-    const isLastAssistantMessage = message === chat.messages
-      .filter(m => m.role === 'assistant')
-      .pop();
+    const isLastAssistantMessage = chat?.messages
+      .filter(m => m.sender === 'assistant')
+      .pop()?.id === message.id;
 
     if (isLastAssistantMessage && !message.displayed) {
       return (
@@ -179,22 +180,22 @@ const ChatArea = ({ chat, onSendMessage, isCentered }) => {
         <div className="max-w-4xl mx-auto space-y-6">
           {chat?.messages.map(message => (
             <div
-              key={`${message.id}-${message.role}`} // Add role to ensure uniqueness
-              className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+              key={message.id}
+              className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
             >
               <div className={`flex items-start gap-4 max-w-[85%] group ${
-                message.role === 'user' ? 'flex-row-reverse' : 'flex-row'
+                message.sender === 'user' ? 'flex-row-reverse' : 'flex-row'
               }`}>
                 <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-white 
                   shadow-lg ${
-                  message.role === 'user' 
+                  message.sender === 'user' 
                     ? 'bg-gradient-to-br from-blue-500 to-blue-600' 
                     : 'bg-gradient-to-br from-gray-700 to-gray-800'
                 }`}>
-                  {message.role === 'user' ? 'U' : 'AI'}
+                  {message.sender === 'user' ? 'U' : 'AI'}
                 </div>
                 <div className={`p-4 rounded-xl shadow-sm whitespace-pre-wrap ${
-                  message.role === 'user' 
+                  message.sender === 'user' 
                     ? 'bg-white/10 text-white' 
                     : 'bg-[#161616] text-gray-200 border border-white/10'
                 }`}>

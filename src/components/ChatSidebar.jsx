@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext'
 import { BiMessageSquare, BiPlus, BiDotsVerticalRounded } from 'react-icons/bi'
 import { FiLogOut, FiTrash2, FiArchive, FiShare2, FiEdit } from 'react-icons/fi'
 
-const ChatSidebar = ({ chats, activeChat, onChatSelect, isCollapsed, onDeleteChat }) => {
+const ChatSidebar = ({ chats, activeChat, onChatSelect, isCollapsed, onDeleteChat, isLoading }) => {
   const { logout } = useAuth()
   const [menuOpen, setMenuOpen] = useState(null)
   const menuRef = useRef(null)
@@ -111,45 +111,54 @@ const ChatSidebar = ({ chats, activeChat, onChatSelect, isCollapsed, onDeleteCha
         
         <div className="flex-1 overflow-y-auto space-y-2.5 scrollbar-thin scrollbar-track-transparent 
           scrollbar-thumb-gray-800/50 hover:scrollbar-thumb-gray-700/50 pr-2 -mr-2">
-          {chats.map(chat => (
-            <div
-              key={chat.id}
-              className="relative" // Added wrapper for proper menu positioning
-            >
-              <div
-                onClick={() => onChatSelect(chat.id)}
-                className={`group p-3.5 rounded-xl cursor-pointer transition-all duration-200 
-                  flex items-center gap-3 relative hover:shadow-sm select-none
-                  active:scale-[0.99] active:duration-75
-                  ${activeChat === chat.id 
-                    ? 'bg-white/10 text-white shadow-sm' 
-                    : 'hover:bg-white/5 text-gray-300 hover:text-gray-200'}`}
-              >
-                <div className="flex-1 flex items-center gap-3 min-w-0">
-                  <BiMessageSquare size={18} className={`flex-shrink-0 transition-colors
-                    ${activeChat === chat.id ? 'text-indigo-400' : 'text-indigo-500/60'}`} />
-                  <span className="truncate overflow-hidden font-medium">{chat.title}</span>
-                </div>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setMenuOpen(menuOpen === chat.id ? null : chat.id);
-                  }}
-                  className="flex-shrink-0 md:opacity-0 md:group-hover:opacity-100 p-2.5 
-                    hover:bg-indigo-800/30 rounded-lg transition-all ml-2
-                    focus:opacity-100 outline-none touch-manipulation"
-                >
-                  <BiDotsVerticalRounded size={20} />
-                </button>
+          {isLoading ? (
+            // Loading skeleton
+            Array(3).fill(0).map((_, i) => (
+              <div key={i} className="animate-pulse">
+                <div className="h-14 bg-white/5 rounded-xl"></div>
               </div>
-              {menuOpen === chat.id && (
-                <ChatOptionsMenu 
-                  chatId={chat.id} 
-                  onClose={() => setMenuOpen(null)} 
-                />
-              )}
-            </div>
-          ))}
+            ))
+          ) : (
+            chats.map(chat => (
+              <div
+                key={chat.id}
+                className="relative" // Added wrapper for proper menu positioning
+              >
+                <div
+                  onClick={() => onChatSelect(chat.id)}
+                  className={`group p-3.5 rounded-xl cursor-pointer transition-all duration-200 
+                    flex items-center gap-3 relative hover:shadow-sm select-none
+                    active:scale-[0.99] active:duration-75
+                    ${activeChat === chat.id 
+                      ? 'bg-white/10 text-white shadow-sm' 
+                      : 'hover:bg-white/5 text-gray-300 hover:text-gray-200'}`}
+                >
+                  <div className="flex-1 flex items-center gap-3 min-w-0">
+                    <BiMessageSquare size={18} className={`flex-shrink-0 transition-colors
+                      ${activeChat === chat.id ? 'text-indigo-400' : 'text-indigo-500/60'}`} />
+                    <span className="truncate overflow-hidden font-medium">{chat.title}</span>
+                  </div>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setMenuOpen(menuOpen === chat.id ? null : chat.id);
+                    }}
+                    className="flex-shrink-0 md:opacity-0 md:group-hover:opacity-100 p-2.5 
+                      hover:bg-indigo-800/30 rounded-lg transition-all ml-2
+                      focus:opacity-100 outline-none touch-manipulation"
+                  >
+                    <BiDotsVerticalRounded size={20} />
+                  </button>
+                </div>
+                {menuOpen === chat.id && (
+                  <ChatOptionsMenu 
+                    chatId={chat.id} 
+                    onClose={() => setMenuOpen(null)} 
+                  />
+                )}
+              </div>
+            ))
+          )}
         </div>
 
         <div className="border-t border-indigo-950/30 pt-4 mt-4">

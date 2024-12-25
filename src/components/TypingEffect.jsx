@@ -1,9 +1,9 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 const TypingEffect = ({ text, onComplete, className }) => {
   const [displayedText, setDisplayedText] = useState('');
   const [isTyping, setIsTyping] = useState(true);
+  const intervalRef = useRef(null);
 
   useEffect(() => {
     if (!text) return;
@@ -12,25 +12,38 @@ const TypingEffect = ({ text, onComplete, className }) => {
     setIsTyping(true);
     let index = 0;
     
-    const interval = setInterval(() => {
+    intervalRef.current = setInterval(() => {
       if (index < text.length) {
         setDisplayedText(prev => prev + text[index]);
         index++;
       } else {
-        clearInterval(interval);
+        clearInterval(intervalRef.current);
         setIsTyping(false);
         if (onComplete) onComplete();
       }
-    }, 25); // Slightly faster typing speed
+    }, 20); // Faster typing speed
 
-    return () => clearInterval(interval);
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
   }, [text, onComplete]);
+
+  // Force complete typing if component unmounts or changes
+  useEffect(() => {
+    return () => {
+      if (isTyping && onComplete) {
+        onComplete();
+      }
+    };
+  }, [isTyping, onComplete]);
 
   return (
     <div className={className}>
       {displayedText}
       {isTyping && (
-        <span className="inline-block w-1 h-4 ml-1 bg-gray-400 animate-pulse" />
+        <span className="inline-block w-2 h-4 ml-1 bg-blue-400 animate-pulse" />
       )}
     </div>
   );
