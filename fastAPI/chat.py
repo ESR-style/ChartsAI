@@ -4,6 +4,12 @@ from typing import List, Dict
 from datetime import datetime
 import uuid
 from fastapi.middleware.cors import CORSMiddleware
+# Neo4j imports (uncomment when ready)
+# from neo4j import GraphDatabase
+# from dotenv import load_dotenv
+# import os
+
+# load_dotenv()  # Load environment variables when ready
 
 app = FastAPI()
 
@@ -14,6 +20,92 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Neo4j Configuration (uncomment and configure when ready)
+'''
+class Neo4jDB:
+    def __init__(self):
+        self.driver = GraphDatabase.driver(
+            os.getenv("NEO4J_URI", "neo4j://localhost:7687"),
+            auth=(
+                os.getenv("NEO4J_USER", "neo4j"),
+                os.getenv("NEO4J_PASSWORD", "password")
+            )
+        )
+
+    def close(self):
+        self.driver.close()
+
+    def create_thread(self, title: str):
+        with self.driver.session() as session:
+            result = session.write_transaction(self._create_thread, title)
+            return result
+
+    @staticmethod
+    def _create_thread(tx, title):
+        query = """
+        CREATE (t:Thread {
+            id: $thread_id,
+            title: $title,
+            created_at: $timestamp
+        })
+        RETURN t
+        """
+        result = tx.run(query,
+            thread_id=str(uuid.uuid4()),
+            title=title,
+            timestamp=datetime.now().isoformat()
+        )
+        return result.single()["t"]
+
+    def create_message(self, thread_id: str, content: str, sender: str):
+        with self.driver.session() as session:
+            result = session.write_transaction(
+                self._create_message,
+                thread_id,
+                content,
+                sender
+            )
+            return result
+
+    @staticmethod
+    def _create_message(tx, thread_id, content, sender):
+        query = """
+        MATCH (t:Thread {id: $thread_id})
+        CREATE (m:Message {
+            id: $message_id,
+            content: $content,
+            sender: $sender,
+            timestamp: $timestamp
+        })-[:BELONGS_TO]->(t)
+        RETURN m
+        """
+        result = tx.run(query,
+            thread_id=thread_id,
+            message_id=str(uuid.uuid4()),
+            content=content,
+            sender=sender,
+            timestamp=datetime.now().isoformat()
+        )
+        return result.single()["m"]
+
+    def get_thread_messages(self, thread_id: str):
+        with self.driver.session() as session:
+            return session.read_transaction(self._get_thread_messages, thread_id)
+
+    @staticmethod
+    def _get_thread_messages(tx, thread_id):
+        query = """
+        MATCH (m:Message)-[:BELONGS_TO]->(t:Thread {id: $thread_id})
+        RETURN m
+        ORDER BY m.timestamp
+        """
+        result = tx.run(query, thread_id=thread_id)
+        return [record["m"] for record in result]
+
+# Initialize Neo4j (uncomment when ready)
+# db = Neo4jDB()
+'''
 
 # Data Models
 class Message(BaseModel):
@@ -30,41 +122,28 @@ class Thread(BaseModel):
     messages: List[Message] = []
 
 # Mock Database
-chat_threads: Dict[str, Thread] = {
-    "1": Thread(
-        id="1",
-        title="Mock Thread",
-        created_at=datetime.now().isoformat(),
-        messages=[
-            Message(
-                id="1",
-                thread_id="1",
-                content="Hello! Welcome to the chat system!",
-                timestamp=datetime.now().isoformat(),
-                sender="System"
-            ),
-            Message(
-                id="2",
-                thread_id="1",
-                content="This is a mock message.",
-                timestamp=datetime.now().isoformat(),
-                sender="System"
-            ),
-            Message(
-                id="3",
-                thread_id="1",
-                content="You can create new threads and messages!",
-                timestamp=datetime.now().isoformat(),
-                sender="System"
-            )
-        ]
-    )
-}
+chat_threads: Dict[str, Thread] = {}
 messages: Dict[str, Message] = {}
 
 # Thread CRUD Operations
 @app.post("/threads/", response_model=Thread)
 async def create_thread(title: str):
+    # Neo4j version (uncomment when ready)
+    '''
+    try:
+        thread_data = db.create_thread(title)
+        new_thread = Thread(
+            id=thread_data["id"],
+            title=thread_data["title"],
+            created_at=thread_data["created_at"],
+            messages=[]
+        )
+        return new_thread
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    '''
+    
+    # Current mock version
     thread_id = str(uuid.uuid4())
     new_thread = Thread(
         id=thread_id,
@@ -189,3 +268,10 @@ async def delete_message(message_id: str):
     
     del messages[message_id]
     return {"message": "Message deleted"}
+
+# When implementing Neo4j, add cleanup on app shutdown
+'''
+@app.on_event("shutdown")
+async def shutdown_event():
+    db.close()
+'''

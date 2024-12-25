@@ -24,10 +24,33 @@ export const chatService = {
   async sendMessage(threadId, content, sender) {
     const response = await fetch(
       `${API_BASE_URL}/threads/${threadId}/messages/?content=${encodeURIComponent(content)}&sender=${encodeURIComponent(sender)}`,
-      { method: 'POST' }
+      { 
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
     );
-    if (!response.ok) throw new Error('Failed to send message');
-    return await response.json(); // This will now return [userMessage, aiResponse]
+    
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.detail || 'Failed to send message');
+    }
+    
+    const [userMessage, aiResponse] = await response.json();
+    
+    // Handle additional AI response data
+    if (aiResponse.analysis_results) {
+      // Process analysis results
+      console.log('Analysis:', aiResponse.analysis_results);
+    }
+    
+    if (aiResponse.charts_data) {
+      // Process chart data
+      console.log('Chart data:', aiResponse.charts_data);
+    }
+    
+    return [userMessage, aiResponse];
   },
 
   async deleteThread(threadId) {
