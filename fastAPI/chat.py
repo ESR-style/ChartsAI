@@ -4,12 +4,8 @@ from typing import List, Dict
 from datetime import datetime
 import uuid
 from fastapi.middleware.cors import CORSMiddleware
-# Neo4j imports (uncomment when ready)
-# from neo4j import GraphDatabase
-# from dotenv import load_dotenv
-# import os
-
-# load_dotenv()  # Load environment variables when ready
+from config.neo4j_config import NEO4J_CONFIG
+from config.openai_config import OPENAI_CONFIG
 
 app = FastAPI()
 
@@ -21,15 +17,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Neo4j Configuration (uncomment and configure when ready)
+# Neo4j Configuration
 '''
 class Neo4jDB:
     def __init__(self):
         self.driver = GraphDatabase.driver(
-            os.getenv("NEO4J_URI", "neo4j://localhost:7687"),
+            NEO4J_CONFIG["uri"],
             auth=(
-                os.getenv("NEO4J_USER", "neo4j"),
-                os.getenv("NEO4J_PASSWORD", "password")
+                NEO4J_CONFIG["user"],
+                NEO4J_CONFIG["password"]
             )
         )
 
@@ -128,7 +124,7 @@ messages: Dict[str, Message] = {}
 # Thread CRUD Operations
 @app.post("/threads/", response_model=Thread)
 async def create_thread(title: str):
-    # Neo4j version (uncomment when ready)
+    # Neo4j version 
     '''
     try:
         thread_data = db.create_thread(title)
@@ -173,7 +169,7 @@ async def delete_thread(thread_id: str):
 
 # Message CRUD Operations
 def generate_mock_response(user_message: str) -> str:
-    # More contextual and varied responses based on user input
+    
     greetings = ['hello', 'hi', 'hey', 'greetings']
     if user_message.lower() in greetings:
         return (
@@ -269,7 +265,7 @@ async def delete_message(message_id: str):
     del messages[message_id]
     return {"message": "Message deleted"}
 
-# When implementing Neo4j, add cleanup on app shutdown
+# Neo4j, add cleanup on app shutdown
 '''
 @app.on_event("shutdown")
 async def shutdown_event():

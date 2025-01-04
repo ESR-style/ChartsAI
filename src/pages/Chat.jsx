@@ -16,7 +16,7 @@ const Chat = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false)
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
 
-  // Replace mock data fetch with API call
+  //  API call
   useEffect(() => {
     const fetchChats = async () => {
       try {
