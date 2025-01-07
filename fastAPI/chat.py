@@ -1,107 +1,20 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-from typing import List, Dict
+from typing import List, Dict, Any
 from datetime import datetime
 import uuid
 from fastapi.middleware.cors import CORSMiddleware
-from config.neo4j_config import NEO4J_CONFIG
-from config.openai_config import OPENAI_CONFIG
+import json
 
 app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Replace with your frontend URL in production
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-# Neo4j Configuration
-'''
-class Neo4jDB:
-    def __init__(self):
-        self.driver = GraphDatabase.driver(
-            NEO4J_CONFIG["uri"],
-            auth=(
-                NEO4J_CONFIG["user"],
-                NEO4J_CONFIG["password"]
-            )
-        )
-
-    def close(self):
-        self.driver.close()
-
-    def create_thread(self, title: str):
-        with self.driver.session() as session:
-            result = session.write_transaction(self._create_thread, title)
-            return result
-
-    @staticmethod
-    def _create_thread(tx, title):
-        query = """
-        CREATE (t:Thread {
-            id: $thread_id,
-            title: $title,
-            created_at: $timestamp
-        })
-        RETURN t
-        """
-        result = tx.run(query,
-            thread_id=str(uuid.uuid4()),
-            title=title,
-            timestamp=datetime.now().isoformat()
-        )
-        return result.single()["t"]
-
-    def create_message(self, thread_id: str, content: str, sender: str):
-        with self.driver.session() as session:
-            result = session.write_transaction(
-                self._create_message,
-                thread_id,
-                content,
-                sender
-            )
-            return result
-
-    @staticmethod
-    def _create_message(tx, thread_id, content, sender):
-        query = """
-        MATCH (t:Thread {id: $thread_id})
-        CREATE (m:Message {
-            id: $message_id,
-            content: $content,
-            sender: $sender,
-            timestamp: $timestamp
-        })-[:BELONGS_TO]->(t)
-        RETURN m
-        """
-        result = tx.run(query,
-            thread_id=thread_id,
-            message_id=str(uuid.uuid4()),
-            content=content,
-            sender=sender,
-            timestamp=datetime.now().isoformat()
-        )
-        return result.single()["m"]
-
-    def get_thread_messages(self, thread_id: str):
-        with self.driver.session() as session:
-            return session.read_transaction(self._get_thread_messages, thread_id)
-
-    @staticmethod
-    def _get_thread_messages(tx, thread_id):
-        query = """
-        MATCH (m:Message)-[:BELONGS_TO]->(t:Thread {id: $thread_id})
-        RETURN m
-        ORDER BY m.timestamp
-        """
-        result = tx.run(query, thread_id=thread_id)
-        return [record["m"] for record in result]
-
-# Initialize Neo4j (uncomment when ready)
-# db = Neo4jDB()
-'''
 
 # Data Models
 class Message(BaseModel):
@@ -121,25 +34,32 @@ class Thread(BaseModel):
 chat_threads: Dict[str, Thread] = {}
 messages: Dict[str, Message] = {}
 
+# Load mock responses
+with open('mock_responses.json') as f:
+    MOCK_RESPONSES = json.load(f)
+
+def generate_mock_response(user_message: str) -> Dict:
+    query = user_message.lower()
+    
+    if "rack" in query and "si" in query:
+        response = MOCK_RESPONSES["supply_chain_queries"]["racks_by_si"]
+        return {
+            "content": f"{response['text']}\n\n{json.dumps(response['data'])}\n\n{response['followup']}"
+        }
+    
+    if "sales" in query and "country" in query:
+        response = MOCK_RESPONSES["supply_chain_queries"]["sales_by_country"]
+        return {
+            "content": f"{response['text']}\n\n{json.dumps(response['data'])}\n\n{response['followup']}"
+        }
+    
+    return {
+        "content": "I can help you analyze your supply chain data. Try asking questions like:\n- Show me sales by country\n- How many racks were built by SI last month?"
+    }
+
 # Thread CRUD Operations
 @app.post("/threads/", response_model=Thread)
 async def create_thread(title: str):
-    # Neo4j version 
-    '''
-    try:
-        thread_data = db.create_thread(title)
-        new_thread = Thread(
-            id=thread_data["id"],
-            title=thread_data["title"],
-            created_at=thread_data["created_at"],
-            messages=[]
-        )
-        return new_thread
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-    '''
-    
-    # Current mock version
     thread_id = str(uuid.uuid4())
     new_thread = Thread(
         id=thread_id,
@@ -168,49 +88,6 @@ async def delete_thread(thread_id: str):
     return {"message": "Thread deleted"}
 
 # Message CRUD Operations
-def generate_mock_response(user_message: str) -> str:
-    
-    greetings = ['hello', 'hi', 'hey', 'greetings']
-    if user_message.lower() in greetings:
-        return (
-            "Hello! I'm your data analysis assistant. I can help you with:\n\n"
-            "1. Available Features:\n"
-            "   - Data visualization\n"
-            "   - Trend analysis\n"
-            "   - Performance metrics\n\n"
-            "2. Getting Started:\n"
-            "   - Upload your data file\n"
-            "   - Ask specific questions\n"
-            "   - Request visualizations\n\n"
-            "What type of analysis would you like to explore?"
-        )
-
-    # Default analysis responses for other queries
-    responses = [
-        f"Analysis of your query: '{user_message}'\n\n"
-        "1. Initial Findings:\n"
-        "   - Detected key variables\n"
-        "   - Analyzed data relationships\n"
-        "   - Found relevant patterns\n\n"
-        "2. Next Steps:\n"
-        "   - Create visualization\n"
-        "   - Perform deeper analysis\n"
-        "   - Generate insights\n\n"
-        "Would you like me to create a chart based on this analysis?",
-
-        f"Examining your request: '{user_message}'\n\n"
-        "1. Data Overview:\n"
-        "   - Categories identified\n"
-        "   - Temporal patterns found\n"
-        "   - Correlations detected\n\n"
-        "2. Suggested Actions:\n"
-        "   - Visualize trends\n"
-        "   - Compare metrics\n"
-        "   - Forecast outcomes\n\n"
-        "Shall I prepare a visual representation for you?"
-    ]
-    return responses[hash(user_message) % len(responses)]
-
 @app.post("/threads/{thread_id}/messages/", response_model=List[Message])
 async def create_message(thread_id: str, content: str, sender: str):
     if thread_id not in chat_threads:
@@ -222,16 +99,19 @@ async def create_message(thread_id: str, content: str, sender: str):
         thread_id=thread_id,
         content=content,
         timestamp=datetime.now().isoformat(),
-        sender="user"  # Force sender to be "user"
+        sender="user"
     )
     
-    # Create AI response
+    # Generate AI response
+    response_data = generate_mock_response(content)
+    
+    # Create AI message
     ai_message = Message(
         id=str(uuid.uuid4()),
         thread_id=thread_id,
-        content=generate_mock_response(content),
+        content=response_data["content"],
         timestamp=datetime.now().isoformat(),
-        sender="assistant"  # Force sender to be "assistant"
+        sender="assistant"
     )
     
     # Add messages to thread
@@ -257,17 +137,8 @@ async def update_message(message_id: str, content: str):
 async def delete_message(message_id: str):
     if message_id not in messages:
         raise HTTPException(status_code=404, detail="Message not found")
-    
     message = messages[message_id]
     thread = chat_threads[message.thread_id]
     thread.messages = [m for m in thread.messages if m.id != message_id]
-    
     del messages[message_id]
     return {"message": "Message deleted"}
-
-# Neo4j, add cleanup on app shutdown
-'''
-@app.on_event("shutdown")
-async def shutdown_event():
-    db.close()
-'''

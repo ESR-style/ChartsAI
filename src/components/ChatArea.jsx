@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react'
 import { BiMicrophone, BiPaperclip, BiSend, BiStop } from 'react-icons/bi'
 import { BsChatLeftDots } from 'react-icons/bs'
 import TypingEffect from './TypingEffect'
+import TableView from './TableView'
 
 // TODO: Import file upload and voice recording services when ready
 // import { uploadService } from '../services/uploadService';
@@ -74,31 +75,34 @@ const ChatArea = ({ chat, onSendMessage, isCentered }) => {
     }
   }
 
+  const tryParseJSON = (text) => {
+    try {
+      const matches = text.match(/\[(.*)\]/s);
+      if (matches) {
+        return JSON.parse(matches[0]);
+      }
+      return null;
+    } catch (e) {
+      return null;
+    }
+  };
+
   const renderMessage = (message) => {
     if (!message || !message.content) return null;
     
-    // For user messages, just return the content
     if (message.sender === 'user') {
       return message.content;
     }
 
-    // Only apply typing effect to the last assistant message
-    const isLastAssistantMessage = chat?.messages
-      .filter(m => m.sender === 'assistant')
-      .pop()?.id === message.id;
-
-    if (isLastAssistantMessage && !message.displayed) {
-      return (
-        <TypingEffect 
-          text={message.content}
-          onComplete={() => { message.displayed = true }}
-          className="whitespace-pre-wrap"
-        />
-      );
-    }
-
-    // Show full content for previous messages
-    return message.content;
+    // Split message into parts and check for JSON data
+    const parts = message.content.split('\n\n');
+    return parts.map((part, index) => {
+      const jsonData = tryParseJSON(part);
+      if (jsonData) {
+        return <TableView key={index} data={jsonData} />;
+      }
+      return <p key={index} className="whitespace-pre-wrap">{part}</p>;
+    });
   };
 
   if (!chat || isCentered) {
