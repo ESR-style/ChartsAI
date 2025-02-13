@@ -8,8 +8,12 @@ export const chatService = {
   },
 
   async createThread(title) {
-    const response = await fetch(`${API_BASE_URL}/threads/?title=${encodeURIComponent(title)}`, {
-      method: 'POST'
+    const response = await fetch(`${API_BASE_URL}/threads/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ title })
     });
     if (!response.ok) throw new Error('Failed to create thread');
     return await response.json();

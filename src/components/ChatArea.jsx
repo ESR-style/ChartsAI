@@ -75,18 +75,6 @@ const ChatArea = ({ chat, onSendMessage, isCentered }) => {
     }
   }
 
-  const tryParseJSON = (text) => {
-    try {
-      const matches = text.match(/\[(.*)\]/s);
-      if (matches) {
-        return JSON.parse(matches[0]);
-      }
-      return null;
-    } catch (e) {
-      return null;
-    }
-  };
-
   const renderMessage = (message) => {
     if (!message || !message.content) return null;
     
@@ -94,15 +82,18 @@ const ChatArea = ({ chat, onSendMessage, isCentered }) => {
       return message.content;
     }
 
-    // Split message into parts and check for JSON data
-    const parts = message.content.split('\n\n');
-    return parts.map((part, index) => {
-      const jsonData = tryParseJSON(part);
-      if (jsonData) {
-        return <TableView key={index} data={jsonData} />;
-      }
-      return <p key={index} className="whitespace-pre-wrap">{part}</p>;
-    });
+    // Handle structured response
+    const content = typeof message.content === 'string' ? JSON.parse(message.content) : message.content;
+    
+    return (
+      <>
+        {content.text && <p className="whitespace-pre-wrap mb-4">{content.text}</p>}
+        {content.type === 'table' && content.data && (
+          <TableView data={content.data} />
+        )}
+        {content.followup && <p className="whitespace-pre-wrap mt-4">{content.followup}</p>}
+      </>
+    );
   };
 
   if (!chat || isCentered) {
