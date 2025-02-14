@@ -9,7 +9,37 @@ const PlotlyRenderers = createPlotlyRenderers(Plot);
 
 const DataGrid = ({ data }) => {
   const [showAnalysis, setShowAnalysis] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const rowsPerPage = 10;
   
+  const downloadExcel = () => {
+    if (!data || data.length === 0) return;
+    
+    // Convert data to TSV format (Excel can open this)
+    const headers = Object.keys(data[0]);
+    const tsvContent = [
+      headers.join('\t'), // Header row
+      ...data.map(row => headers.map(header => {
+        let cell = row[header]?.toString() || '';
+        // Escape tabs and wrap in quotes if contains tab or newline
+        if (cell.includes('\t') || cell.includes('\n')) {
+          cell = `"${cell.replace(/"/g, '""')}"`;
+        }
+        return cell;
+      }).join('\t'))
+    ].join('\n');
+
+    // Create and trigger download
+    const blob = new Blob([tsvContent], { type: 'text/tab-separated-values;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', 'data_export.xls');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   // Set default pivot table state with some intelligent defaults based on data
   const getInitialPivotState = useCallback(() => {
     if (!data || data.length === 0) return {};
@@ -27,52 +57,22 @@ const DataGrid = ({ data }) => {
       valueFilter: {},
       sorters: {},
       plotlyOptions: {
-        width: 900,
-        height: 500
+        width: window.innerWidth - 100,
+        height: window.innerHeight - 200
       }
     };
   }, [data]);
 
   const [pivotState, setPivotState] = useState(getInitialPivotState());
 
-  // Basic table rendering function
-  const renderBasicTable = () => {
-    if (!data || data.length === 0) return null;
-    const headers = Object.keys(data[0]);
-
-    return (
-      <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-white/10">
-          <thead>
-            <tr>
-              {headers.map((header, index) => (
-                <th
-                  key={index}
-                  className="px-4 py-3 text-left text-sm font-semibold text-white/90 bg-white/5"
-                >
-                  {header}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-white/10">
-            {data.slice(0, 100).map((row, rowIndex) => (
-              <tr key={rowIndex} className="hover:bg-white/5">
-                {headers.map((header, colIndex) => (
-                  <td
-                    key={`${rowIndex}-${colIndex}`}
-                    className="px-4 py-2 text-sm text-white/80"
-                  >
-                    {row[header]?.toString()}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    );
-  };
+  // Pagination calculations
+  const totalPages = Math.ceil((data?.length || 0) / rowsPerPage);
+  const startIndex = (currentPage - 1) * rowsPerPage;
+  const endIndex = startIndex + rowsPerPage;
+  
+  // Pagination controls
+  const handlePrevPage = () => setCurrentPage(prev => Math.max(prev - 1, 1));
+  const handleNextPage = () => setCurrentPage(prev => Math.min(prev + 1, totalPages));
 
   return (
     <div className="relative">
@@ -84,15 +84,23 @@ const DataGrid = ({ data }) => {
           >
             {showAnalysis ? 'Show Table' : 'Data Analysis'}
           </button>
+          
+          <button
+            onClick={downloadExcel}
+            className="px-3 py-1 bg-blue-600/20 hover:bg-blue-600/30 text-blue-500 
+              rounded-md text-sm transition-colors cursor-pointer"
+          >
+            Download Excel
+          </button>
         </div>
       </div>
 
       <div className={`transition-all duration-300 ${
-        showAnalysis ? 'fixed inset-4 z-50 bg-[#161616] p-4 overflow-auto' : 'h-[400px] overflow-auto'
+        showAnalysis ? 'fixed inset-0 z-50 bg-[#161616] p-4 overflow-auto' : ''
       }`}>
-        <div className="bg-[#161616] text-white h-full">
+        <div className="bg-[#161616] text-white h-full w-full">
           {showAnalysis ? (
-            <div>
+            <div className="w-full h-full">
               <PivotTableUI
                 data={data}
                 onChange={s => setPivotState(s)}
@@ -103,7 +111,68 @@ const DataGrid = ({ data }) => {
               />
             </div>
           ) : (
-            renderBasicTable()
+            <div className="w-full">
+              {data && data.length > 0 && (
+                <>
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full divide-y divide-white/10">
+                      <thead>
+                        <tr>
+                          {Object.keys(data[0]).map((header, index) => (
+                            <th
+                              key={index}
+                              className="px-4 py-3 text-left text-sm font-semibold text-white/90 bg-white/5"
+                            >
+                              {header}
+                            </th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-white/10">
+                        {data.slice(startIndex, endIndex).map((row, rowIndex) => (
+                          <tr key={rowIndex} className="hover:bg-white/5">
+                            {Object.keys(data[0]).map((header, colIndex) => (
+                              <td
+                                key={`${rowIndex}-${colIndex}`}
+                                className="px-4 py-2 text-sm text-white/80"
+                              >
+                                {row[header]?.toString()}
+                              </td>
+                            ))}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                  <div className="flex justify-between items-center mt-4 px-4 py-3 bg-white/5 rounded-md">
+                    <div className="text-sm text-white/80">
+                      Showing {startIndex + 1}-{Math.min(endIndex, data.length)} of {data.length} entries
+                    </div>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={handlePrevPage}
+                        disabled={currentPage === 1}
+                        className="px-3 py-1 bg-white/10 hover:bg-white/20 rounded-md text-sm text-white/90 
+                          transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        Previous
+                      </button>
+                      <span className="px-3 py-1 text-sm text-white/90">
+                        Page {currentPage} of {totalPages}
+                      </span>
+                      <button
+                        onClick={handleNextPage}
+                        disabled={currentPage === totalPages}
+                        className="px-3 py-1 bg-white/10 hover:bg-white/20 rounded-md text-sm text-white/90 
+                          transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        Next
+                      </button>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
           )}
         </div>
       </div>
