@@ -91,21 +91,35 @@
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+  padding: 4px 8px;
+  display: inline-block;
+  width: 100%;
+  user-select: none;
 }
 
 .pivot-table-dark .pvtTriangle {
   color: rgba(255, 255, 255, 0.6);
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  padding: 4px;
 }
 
 .pivot-table-dark select {
   background: #161616;
   color: rgba(255, 255, 255, 0.9);
   border: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  padding: 4px;
 }
 
 .pivot-table-dark .pvtCheckContainer {
   background: #161616;
   border: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  padding: 4px;
 }
 
 .pivot-table-dark .pvtCheckContainer p {
@@ -163,4 +177,50 @@
 /* Remove PivotTable.js logo */
 .pivot-table-dark .pvtUi > img {
   display: none;
+}
+
+/* Improve dropdown menus */
+.pivot-table-dark .pvtDropdown {
+  background: #161616;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  padding: 4px;
+  margin-top: 4px;
+}
+
+.pivot-table-dark .pvtFilterBox {
+  background: #161616;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  padding: 8px;
+  z-index: 100;
+}
+
+.pivot-table-dark .pvtFilterBox input[type="text"],
+.pivot-table-dark .pvtFilterBox input[type="search"] {
+  background: #242424;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.9);
+  padding: 4px 8px;
+  border-radius: 4px;
+  width: 100%;
+  margin: 4px 0;
+}
+
+.pivot-table-dark .pvtFilterBox input[type="checkbox"] {
+  cursor: pointer;
+  margin-right: 8px;
+}
+
+.pivot-table-dark .pvtCheckContainer p label {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 2px 0;
+}
+
+/* Active states */
+.pivot-table-dark .pvtAxisContainer li span.pvtAttr.pvtAttrSelected {
+  background: rgba(59, 130, 246, 0.2);
+  border-color: rgba(59, 130, 246, 0.4);
 }
