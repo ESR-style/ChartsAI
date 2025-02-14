@@ -2,16 +2,13 @@ import React, { useState, useRef, useEffect } from 'react'
 import { BiMicrophone, BiPaperclip, BiSend, BiStop } from 'react-icons/bi'
 import { BsChatLeftDots } from 'react-icons/bs'
 import TypingEffect from './TypingEffect'
-import TableView from './TableView'
-
-// TODO: Import file upload and voice recording services when ready
-// import { uploadService } from '../services/uploadService';
-// import { voiceService } from '../services/voiceService';
+import DataGrid from './DataGrid'
 
 const ChatArea = ({ chat, onSendMessage, isCentered }) => {
   const [input, setInput] = useState('')
   const [isRecording, setIsRecording] = useState(false)
   const [isProcessing, setIsProcessing] = useState(false)
+  const [expandedGrid, setExpandedGrid] = useState(false)
   const fileInputRef = useRef(null)
   const bottomRef = useRef(null)
 
@@ -82,17 +79,20 @@ const ChatArea = ({ chat, onSendMessage, isCentered }) => {
       return message.content;
     }
 
-    // Handle structured response
     const content = typeof message.content === 'string' ? JSON.parse(message.content) : message.content;
     
     return (
-      <>
+      <div className="flex-1">
         {content.text && <p className="whitespace-pre-wrap mb-4">{content.text}</p>}
         {content.type === 'table' && content.data && (
-          <TableView data={content.data} />
+          <DataGrid 
+            data={content.data} 
+            isExpanded={expandedGrid}
+            onToggleExpand={() => setExpandedGrid(!expandedGrid)}
+          />
         )}
         {content.followup && <p className="whitespace-pre-wrap mt-4">{content.followup}</p>}
-      </>
+      </div>
     );
   };
 
@@ -172,24 +172,24 @@ const ChatArea = ({ chat, onSendMessage, isCentered }) => {
     <div className="flex-1 flex flex-col">
       <div className="flex-1 p-6 overflow-y-auto scrollbar-thin scrollbar-track-transparent 
         scrollbar-thumb-gray-800/50">
-        <div className="max-w-4xl mx-auto space-y-6">
+        <div className="max-w-full mx-auto space-y-6">
           {chat?.messages.map(message => (
             <div
               key={message.id}
               className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
             >
-              <div className={`flex items-start gap-4 max-w-[85%] group ${
+              <div className={`flex items-start gap-4 ${message.sender === 'user' ? 'max-w-[85%]' : 'max-w-full w-full'} group ${
                 message.sender === 'user' ? 'flex-row-reverse' : 'flex-row'
               }`}>
                 <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-white 
-                  shadow-lg ${
+                  shadow-lg flex-shrink-0 ${
                   message.sender === 'user' 
                     ? 'bg-gradient-to-br from-blue-500 to-blue-600' 
                     : 'bg-gradient-to-br from-gray-700 to-gray-800'
                 }`}>
                   {message.sender === 'user' ? 'U' : 'AI'}
                 </div>
-                <div className={`p-4 rounded-xl shadow-sm whitespace-pre-wrap ${
+                <div className={`p-4 rounded-xl shadow-sm whitespace-pre-wrap flex-1 ${
                   message.sender === 'user' 
                     ? 'bg-white/10 text-white' 
                     : 'bg-[#161616] text-gray-200 border border-white/10'

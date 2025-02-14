@@ -20,7 +20,7 @@ const TopBar = ({ toggleSidebar, isCollapsed, onOpenProfile, onOpenSettings }) =
         </button>
         <h1 className="text-2xl font-bold bg-gradient-to-r from-gray-200 to-gray-400 
           bg-clip-text text-transparent tracking-tight">
-          ChartsAI
+          VeritazAI
         </h1>
       </div>
       
