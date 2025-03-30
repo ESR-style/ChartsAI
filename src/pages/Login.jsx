@@ -1,99 +1,95 @@
-import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext'
-import { FiLoader } from 'react-icons/fi'
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 const Login = () => {
-  const [credentials, setCredentials] = useState({ username: '', password: '' })
-  const [error, setError] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
-  const { login } = useAuth()
-  const navigate = useNavigate()
+  const [credentials, setCredentials] = useState({ username: '', password: '' });
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+  const { login } = useAuth();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    setError('')
-    setIsLoading(true)
+    e.preventDefault();
+    setError('');
+    setIsLoading(true);
 
     try {
       if (!credentials.username || !credentials.password) {
-        throw new Error('Please enter both username and password')
+        throw new Error('Please enter both username and password');
       }
 
-      // integrate with  backend API
-      const response = await login(credentials)
+      const response = await login(credentials);
       if (response.success) {
-        navigate('/')
+        navigate('/');
       } else {
-        throw new Error(response.message || 'Invalid credentials')
+        throw new Error(response.message || 'Invalid credentials');
       }
     } catch (error) {
-      setError(error.message)
+      setError(error.message);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#0f0f0f]">
-      <div className="bg-[#161616] p-8 rounded-xl shadow-2xl w-96 border border-white/10">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-gray-200 to-gray-400 bg-clip-text text-transparent">
-            ChartsAI
-          </h1>
-          <p className="text-gray-400 text-sm">Sign in to your account</p>
-        </div>
+    <div className="min-h-screen flex font-satoshi relative">
+      {/* Left Section */}
+      <div className="flex-1 bg-[#666FE4] flex items-center justify-center">
+        <img
+          src="/assets/left.png"
+          alt="Left Side Graphic"
+          className="w-[220px] h-auto"
+        />
+      </div>
 
-        {error && (
-          <div className="mb-4 p-3 bg-red-500/5 border border-red-500/10 rounded-lg text-red-400 text-sm">
-            {error}
+      {/* Right Section */}
+      <div className="flex-1 bg-white flex items-center justify-center">
+        <div className="w-[500px] px-12 py-14 bg-white rounded-lg">
+          <div className="flex flex-col items-start mb-[23px]">
+            <img src="/assets/logo.png" alt="Logo" className="w-[182px] h-[42px] mb-6" />
+            <h2 className="text-[32px] font-normal text-gray-800">Sign in</h2>
           </div>
-        )}
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="text-sm text-gray-400 mb-1 block">Username</label>
-            <input
-              type="text"
-              className="w-full p-3 bg-[#0f0f0f] border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-white/10 focus:border-white/20"
-              placeholder="Enter your username"
-              onChange={e => setCredentials({...credentials, username: e.target.value})}
-            />
-          </div>
-
-          <div>
-            <label className="text-sm text-gray-400 mb-1 block">Password</label>
-            <input
-              type="password"
-              className="w-full p-3 bg-[#0f0f0f] border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-white/10 focus:border-white/20"
-              placeholder="Enter your password"
-              onChange={e => setCredentials({...credentials, password: e.target.value})}
-            />
-          </div>
-
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full bg-white/10 text-white p-3 rounded-lg font-medium hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/10 transition duration-200 flex items-center justify-center"
-          >
-            {isLoading ? <FiLoader className="animate-spin" size={20} /> : 'Sign in'}
-          </button>
-        </form>
-
-        <div className="mt-6 flex flex-col items-center gap-4 text-sm text-gray-400">
-          <Link to="/forgot-password" className="text-blue-500 hover:text-blue-400">
-            Forgot password?
-          </Link>
-          <div>
-            Don't have an account?{' '}
-            <Link to="/register" className="text-blue-500 hover:text-blue-400">
-              Create one
-            </Link>
-          </div>
+          <form onSubmit={handleSubmit} className="space-y-8 w-full">
+            <div className="w-full">
+              <label htmlFor="username" className="block text-[18px] font-normal text-gray-600">
+                Username
+              </label>
+              <input
+                id="username"
+                type="text"
+                className="mt-2 block w-[334px] h-[60px] px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#666FE4] focus:border-[#666FE4] text-[16px]"
+                placeholder="Enter your username"
+                value={credentials.username}
+                onChange={(e) => setCredentials({ ...credentials, username: e.target.value })}
+              />
+            </div>
+            <div className="w-full">
+              <label htmlFor="password" className="block text-[18px] font-normal text-gray-600">
+                Password
+              </label>
+              <input
+                id="password"
+                type="password"
+                className="mt-2 block w-[334px] h-[60px] px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#666FE4] focus:border-[#666FE4] text-[16px]"
+                placeholder="Enter your password"
+                value={credentials.password}
+                onChange={(e) => setCredentials({ ...credentials, password: e.target.value })}
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-[334px] h-[78px] flex justify-center items-center border border-transparent rounded-md shadow-sm text-[18px] font-normal text-white bg-[#666FE4] hover:bg-[#5b5fc7] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#666FE4]"
+            >
+              {isLoading ? 'Loading...' : 'Sign in'}
+            </button>
+          </form>
+          {error && <p className="mt-4 text-sm text-red-600">{error}</p>}
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;
