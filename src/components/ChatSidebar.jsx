@@ -40,8 +40,8 @@ const ChatSidebar = ({ chats, activeChat, onChatSelect, isCollapsed, onDeleteCha
     <div 
       ref={menuRef} 
       className="absolute right-0 top-[110%] mt-1 w-48 
-        bg-[#161616] border border-white/10 rounded-xl shadow-xl z-[100]
-        backdrop-blur-lg animate-fadeIn"
+        bg-white border border-gray-200 rounded-xl shadow-xl z-[100]
+        animate-fadeIn"
       style={{ transformOrigin: 'top right' }}
     >
       <div className="py-1.5 px-1">
@@ -50,8 +50,8 @@ const ChatSidebar = ({ chats, activeChat, onChatSelect, isCollapsed, onDeleteCha
             handleRename(chatId);
             onClose();
           }}
-          className="w-full flex items-center gap-2 px-3 py-2 text-gray-400 
-            hover:text-white hover:bg-white/5 rounded-lg transition-colors"
+          className="w-full flex items-center gap-2 px-3 py-2 text-gray-600 
+            hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
         >
           <FiEdit size={16} />
           <span>Rename</span>
@@ -61,8 +61,8 @@ const ChatSidebar = ({ chats, activeChat, onChatSelect, isCollapsed, onDeleteCha
             handleArchive(chatId);
             onClose();
           }}
-          className="w-full flex items-center gap-2 px-3 py-2 text-gray-400 
-            hover:text-white hover:bg-white/5 rounded-lg transition-colors"
+          className="w-full flex items-center gap-2 px-3 py-2 text-gray-600 
+            hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
         >
           <FiArchive size={16} />
           <span>Archive</span>
@@ -72,8 +72,8 @@ const ChatSidebar = ({ chats, activeChat, onChatSelect, isCollapsed, onDeleteCha
             handleShare(chatId);
             onClose();
           }}
-          className="w-full flex items-center gap-2 px-3 py-2 text-gray-400 
-            hover:text-white hover:bg-white/5 rounded-lg transition-colors"
+          className="w-full flex items-center gap-2 px-3 py-2 text-gray-600 
+            hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
         >
           <FiShare2 size={16} />
           <span>Share</span>
@@ -83,8 +83,8 @@ const ChatSidebar = ({ chats, activeChat, onChatSelect, isCollapsed, onDeleteCha
             onDeleteChat(chatId);
             onClose();
           }}
-          className="w-full flex items-center gap-2 px-3 py-2 text-red-400 
-            hover:text-red-300 hover:bg-red-500/5 rounded-lg transition-colors"
+          className="w-full flex items-center gap-2 px-3 py-2 text-red-500 
+            hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
         >
           <FiTrash2 size={16} />
           <span>Delete</span>
@@ -94,28 +94,27 @@ const ChatSidebar = ({ chats, activeChat, onChatSelect, isCollapsed, onDeleteCha
   );
 
   return (
-    <div className={`w-80 text-gray-300 flex flex-col h-[calc(100vh-4rem)] 
-      overflow-hidden border-r border-white/10`}>
+    <div className="w-80 text-gray-700 flex flex-col h-[calc(100vh-4rem)] 
+      overflow-hidden border-r border-gray-200 bg-gray-50">
       <div className="p-4 flex flex-col h-full">
         <button
           className="flex items-center gap-3 p-4 rounded-xl 
-            bg-white/5 hover:bg-white/10
-            border border-white/10 hover:border-white/20
+            bg-white hover:bg-gray-100
+            border border-gray-200 hover:border-gray-300
             transition-all duration-300 w-full mb-6 group"
           onClick={() => onChatSelect(null)}
         >
-          <BiPlus size={20} className="text-gray-400 group-hover:text-gray-200 
+          <BiPlus size={20} className="text-gray-500 group-hover:text-gray-700 
             transition-colors transform group-hover:rotate-90 duration-300" />
-          <span className="text-gray-300 group-hover:text-gray-200">New Chat</span>
+          <span className="text-gray-700 group-hover:text-gray-900">New Chat</span>
         </button>
         
-        <div className="flex-1 overflow-y-auto space-y-2.5 scrollbar-thin scrollbar-track-transparent 
-          scrollbar-thumb-gray-800/50 hover:scrollbar-thumb-gray-700/50 pr-2 -mr-2">
+        <div className="flex-1 overflow-y-auto space-y-2.5 pr-2 -mr-2">
           {isLoading ? (
             // Loading skeleton
             Array(3).fill(0).map((_, i) => (
               <div key={i} className="animate-pulse">
-                <div className="h-14 bg-white/5 rounded-xl"></div>
+                <div className="h-14 bg-gray-200 rounded-xl"></div>
               </div>
             ))
           ) : (
@@ -130,12 +129,12 @@ const ChatSidebar = ({ chats, activeChat, onChatSelect, isCollapsed, onDeleteCha
                     flex items-center gap-3 relative hover:shadow-sm select-none
                     active:scale-[0.99] active:duration-75
                     ${activeChat === chat.id 
-                      ? 'bg-white/10 text-white shadow-sm' 
-                      : 'hover:bg-white/5 text-gray-300 hover:text-gray-200'}`}
+                      ? 'bg-blue-50 text-gray-900 shadow-sm' 
+                      : 'hover:bg-gray-100 text-gray-700 hover:text-gray-900'}`}
                 >
                   <div className="flex-1 flex items-center gap-3 min-w-0">
                     <BiMessageSquare size={18} className={`flex-shrink-0 transition-colors
-                      ${activeChat === chat.id ? 'text-indigo-400' : 'text-indigo-500/60'}`} />
+                      ${activeChat === chat.id ? 'text-blue-600' : 'text-blue-500'}`} />
                     <span className="truncate overflow-hidden font-medium">{chat.title}</span>
                   </div>
                   <button
@@ -144,7 +143,7 @@ const ChatSidebar = ({ chats, activeChat, onChatSelect, isCollapsed, onDeleteCha
                       setMenuOpen(menuOpen === chat.id ? null : chat.id);
                     }}
                     className="flex-shrink-0 md:opacity-0 md:group-hover:opacity-100 p-2.5 
-                      hover:bg-indigo-800/30 rounded-lg transition-all ml-2
+                      hover:bg-blue-100 rounded-lg transition-all ml-2
                       focus:opacity-100 outline-none touch-manipulation"
                   >
                     <BiDotsVerticalRounded size={20} />
@@ -161,15 +160,15 @@ const ChatSidebar = ({ chats, activeChat, onChatSelect, isCollapsed, onDeleteCha
           )}
         </div>
 
-        <div className="border-t border-indigo-950/30 pt-4 mt-4">
+        <div className="border-t border-gray-200 pt-4 mt-4">
           <button
             className="flex items-center gap-3 p-3.5 rounded-xl 
-              hover:bg-red-500/10 transition-all duration-300 w-full 
-              text-indigo-300 hover:text-red-400 group
-              border border-transparent hover:border-red-500/20"
+              hover:bg-red-50 transition-all duration-300 w-full 
+              text-blue-600 hover:text-red-500 group
+              border border-transparent hover:border-red-100"
             onClick={logout}
           >
-            <FiLogOut size={20} className="group-hover:text-red-400 transition-colors" />
+            <FiLogOut size={20} className="group-hover:text-red-500 transition-colors" />
             <span className="font-medium">Logout</span>
           </button>
         </div>

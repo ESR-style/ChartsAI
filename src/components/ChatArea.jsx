@@ -1,10 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { BiMicrophone, BiPaperclip, BiSend, BiStop } from 'react-icons/bi'
-import { BsChatLeftDots } from 'react-icons/bs'
+import { BiMicrophone, BiPaperclip, BiSend, BiStop ,BiBarChart,BiLineChart,BiMessageSquareDetail,BiTrendingUp} from 'react-icons/bi'
 import TypingEffect from './TypingEffect'
 import DataGrid from './DataGrid'
 
-const ChatArea = ({ chat, onSendMessage, isCentered }) => {
+const ChatArea = ({ chat, onSendMessage, isCentered, isSidebarCollapsed }) => {
   const [input, setInput] = useState('')
   const [isRecording, setIsRecording] = useState(false)
   const [isProcessing, setIsProcessing] = useState(false)
@@ -40,11 +39,6 @@ const ChatArea = ({ chat, onSendMessage, isCentered }) => {
     const file = e.target.files?.[0]
     if (file) {
       try {
-        // TODO: Replace with actual file upload
-        // const uploadedFile = await uploadService.uploadFile(file);
-        // const analysisResult = await uploadService.analyzeFile(uploadedFile.id);
-        // onSendMessage(`Analyzing file: ${file.name}\n${analysisResult}`);
-        
         // Temporary mock implementation
         onSendMessage(`Analyzing file: ${file.name}\nMock analysis result...`);
       } catch (error) {
@@ -57,13 +51,7 @@ const ChatArea = ({ chat, onSendMessage, isCentered }) => {
     try {
       if (isRecording) {
         setIsRecording(false);
-        // TODO: Implement voice recording stop and processing
-        // const audioData = await voiceService.stopRecording();
-        // const transcription = await voiceService.transcribe(audioData);
-        // setInput(transcription);
       } else {
-        // TODO: Implement voice recording start
-        // await voiceService.startRecording();
         setIsRecording(true);
       }
     } catch (error) {
@@ -98,81 +86,81 @@ const ChatArea = ({ chat, onSendMessage, isCentered }) => {
 
   if (!chat || isCentered) {
     return (
-      <div className="flex-1 flex flex-col">
-        <div className="flex-1 flex flex-col items-center justify-center p-4">
-          <div className="mb-12 text-center max-w-2xl mx-auto px-4">
-            <div className="w-20 h-20 mx-auto mb-8 rounded-2xl bg-white/5 
-              flex items-center justify-center border border-white/10">
-              <BsChatLeftDots size={40} className="text-gray-400 animate-pulse" />
-            </div>
-            <h2 className="text-3xl font-bold mb-4 bg-gradient-to-r from-gray-200 to-gray-400 
-              bg-clip-text text-transparent tracking-tight">
-              Welcome to ChartsAI
-            </h2>
-            <p className="text-gray-500 text-lg mb-8">
-              Ask me anything about your data - I can help with charts, analysis, predictions, and insights.
-            </p>
-          </div>
-          <form onSubmit={handleSubmit} className="w-full max-w-2xl px-4">
-            <div className="relative group">
-              <input
-                type="text"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                className="w-full p-4 pl-5 pr-36 bg-[#161616] border border-white/10 rounded-xl 
-                  text-white placeholder-gray-500
-                  focus:outline-none focus:border-white/20 focus:ring-2 
-                  focus:ring-white/20"
-                placeholder="Ask about your data..."
-                autoFocus
-              />
-              <div className="absolute right-2 top-2 flex gap-2">
-                <button
-                  type="button"
-                  onClick={handleAttachment}
-                  className="p-2 text-gray-400 hover:text-white rounded-lg hover:bg-white/5 
-                    transition-colors"
-                >
-                  <BiPaperclip size={20} />
-                </button>
-                <button
-                  type="button"
-                  onClick={handleVoiceRecording}
-                  className={`p-2 rounded-lg transition-colors
-                    ${isRecording 
-                      ? 'text-red-400 hover:text-red-300 hover:bg-red-500/5' 
-                      : 'text-gray-400 hover:text-white hover:bg-white/5'
-                    }`}
-                >
-                  {isRecording ? <BiStop size={20} /> : <BiMicrophone size={20} />}
-                </button>
-                <button
-                  type="submit"
-                  className="bg-white/10 text-white px-4 py-2 rounded-lg hover:bg-white/20 
-                    transition-all duration-200 flex items-center gap-2"
-                >
-                  <BiSend size={20} />
-                </button>
-              </div>
-              <input
-                type="file"
-                ref={fileInputRef}
-                onChange={handleFileChange}
-                className="hidden"
-                accept=".csv,.xlsx,.json"
-              />
-            </div>
-          </form>
+      <div className={`flex-1 flex flex-col items-center justify-center bg-white transition-all duration-300 ${isSidebarCollapsed ? 'w-full' : ''}`}>
+      <div className={`text-center px-4 transition-all duration-300 ${isSidebarCollapsed ? 'scale-100' : 'scale-95'}`} style={{ width: "780px", height: "502px", display: "flex", flexDirection: "column", justifyContent: "center" }}>
+        <h1 className="text-5xl font-bold text-gray-900 mb-6">Welcome to Charts AI</h1>
+        <p className="text-xl text-gray-600 mb-10">
+        Ask me anything about your data, whether it is about charts, analysis, predictions, and insights.
+        </p>
+        <form onSubmit={handleSubmit} className="relative mx-auto" style={{ width: "575px", height: "84px" }}>
+        <input
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          className="w-full h-full p-5 pl-6 pr-16 bg-gray-100 border border-gray-300 rounded-2xl text-lg text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          placeholder="Ask about data"
+          style={{ width: "575px", height: "84px" }}
+        />
+        <div className="absolute right-4 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
+          <button
+          type="button"
+          onClick={handleAttachment}
+          className="text-gray-500 hover:text-gray-700"
+          >
+          <BiPaperclip size={24} />
+          </button>
+          <button
+          type="button"
+          onClick={handleVoiceRecording}
+          className={`text-gray-500 hover:text-gray-700 ${isRecording ? 'text-red-500' : ''}`}
+          >
+          {isRecording ? <BiStop size={24} /> : <BiMicrophone size={24} />}
+          </button>
+          <button
+          type="submit"
+          className="bg-blue-500 text-white p-3 rounded-full hover:bg-blue-600"
+          >
+          <BiSend size={24} />
+          </button>
         </div>
+        <input
+          type="file"
+          ref={fileInputRef}
+          onChange={handleFileChange}
+          className="hidden"
+        />
+        </form>
+        <div className="mt-8 flex flex-wrap justify-center gap-3">
+        <button className="px-5 py-3 bg-gray-200 text-gray-700 rounded-md text-base hover:bg-gray-300 flex items-center gap-2">
+          <BiBarChart size={20} />
+          An example about charts
+        </button>
+        <button className="px-5 py-3 bg-gray-200 text-gray-700 rounded-md text-base hover:bg-gray-300 flex items-center gap-2">
+          <BiLineChart size={20} />
+          An example about charts
+        </button>
+        <button className="px-5 py-3 bg-gray-200 text-gray-700 rounded-md text-base hover:bg-gray-300 flex items-center gap-2">
+          <BiMessageSquareDetail size={20} />
+          Examples of prompts
+        </button>
+        <button className="px-5 py-3 bg-gray-200 text-gray-700 rounded-md text-base hover:bg-gray-300 flex items-center gap-2">
+          <BiLineChart size={20} />
+          Prompt example of insight
+        </button>
+        <button className="px-5 py-3 bg-gray-200 text-gray-700 rounded-md text-base hover:bg-gray-300 flex items-center gap-2">
+          <BiTrendingUp size={20} />
+          An example on predictions
+        </button>
+        </div>
+      </div>
       </div>
     )
   }
 
   return (
-    <div className="flex-1 flex flex-col">
-      <div className="flex-1 p-6 overflow-y-auto scrollbar-thin scrollbar-track-transparent 
-        scrollbar-thumb-gray-800/50">
-        <div className="max-w-full mx-auto space-y-6">
+    <div className={`flex-1 flex flex-col bg-white transition-all duration-300 ${isSidebarCollapsed ? 'w-full' : 'w-full'}`}>
+      <div className="flex-1 p-6 overflow-y-auto">
+        <div className={`mx-auto space-y-6 transition-all duration-300 ${isSidebarCollapsed ? 'max-w-5xl' : 'max-w-4xl'}`}>
           {chat?.messages.map(message => (
             <div
               key={message.id}
@@ -181,18 +169,18 @@ const ChatArea = ({ chat, onSendMessage, isCentered }) => {
               <div className={`flex items-start gap-4 ${message.sender === 'user' ? 'max-w-[85%]' : 'max-w-full w-full'} group ${
                 message.sender === 'user' ? 'flex-row-reverse' : 'flex-row'
               }`}>
-                <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-white 
+                <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-white 
                   shadow-lg flex-shrink-0 ${
                   message.sender === 'user' 
-                    ? 'bg-gradient-to-br from-blue-500 to-blue-600' 
-                    : 'bg-gradient-to-br from-gray-700 to-gray-800'
+                    ? 'bg-blue-500' 
+                    : 'bg-gray-500'
                 }`}>
                   {message.sender === 'user' ? 'U' : 'AI'}
                 </div>
-                <div className={`p-4 rounded-xl shadow-sm whitespace-pre-wrap flex-1 ${
+                <div className={`p-4 rounded-xl shadow-sm whitespace-pre-wrap flex-1 text-lg ${
                   message.sender === 'user' 
-                    ? 'bg-white/10 text-white' 
-                    : 'bg-[#161616] text-gray-200 border border-white/10'
+                    ? 'bg-blue-100 text-gray-800' 
+                    : 'bg-gray-100 text-gray-800 border border-gray-200'
                 }`}>
                   {renderMessage(message)}
                 </div>
@@ -203,43 +191,43 @@ const ChatArea = ({ chat, onSendMessage, isCentered }) => {
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="p-6 border-t border-white/10 bg-[#0f0f0f]/90 
-        backdrop-blur-lg">
-        <div className="max-w-4xl mx-auto relative">
+      <form onSubmit={handleSubmit} className="p-6 border-t border-gray-200 bg-white">
+        <div className={`mx-auto relative transition-all duration-300 ${isSidebarCollapsed ? 'max-w-3xl' : 'max-w-2xl'}`} style={{ width: "575px", height: "84px" }}>
           <input
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            className="w-full p-4 pl-5 pr-36 bg-[#161616] border border-white/10 rounded-xl 
-              text-white placeholder-gray-500
-              focus:outline-none focus:border-white/20 focus:ring-2 
-              focus:ring-white/20"
+            className="w-full h-full p-5 pl-6 pr-36 bg-gray-100 border border-gray-300 rounded-xl 
+              text-lg text-gray-800 placeholder-gray-500
+              focus:outline-none focus:border-blue-300 focus:ring-2 
+              focus:ring-blue-200"
             placeholder="Type your message..."
+            style={{ width: "575px", height: "84px" }}
           />
-          <div className="absolute right-2 top-2 flex gap-2">
+          <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
             <button
               type="button"
               onClick={handleAttachment}
-              className="p-2 text-gray-400 hover:text-white rounded-lg hover:bg-gray-600"
+              className="p-3 text-gray-500 hover:text-gray-700 rounded-lg hover:bg-gray-200"
             >
-              <BiPaperclip size={20} />
+              <BiPaperclip size={24} />
             </button>
             <button
               type="button"
               onClick={handleVoiceRecording}
-              className={`p-2 rounded-lg ${
+              className={`p-3 rounded-lg ${
                 isRecording 
                   ? 'text-red-500 hover:text-red-600' 
-                  : 'text-gray-400 hover:text-white'
-              } hover:bg-gray-600`}
+                  : 'text-gray-500 hover:text-gray-700'
+              } hover:bg-gray-200`}
             >
-              {isRecording ? <BiStop size={20} /> : <BiMicrophone size={20} />}
+              {isRecording ? <BiStop size={24} /> : <BiMicrophone size={24} />}
             </button>
             <button
               type="submit"
-              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-200 flex items-center gap-2"
+              className="bg-blue-500 text-white px-5 py-3 rounded-lg hover:bg-blue-600 transition duration-200 flex items-center gap-2"
             >
-              <BiSend size={20} />
+              <BiSend size={24} />
             </button>
           </div>
           <input

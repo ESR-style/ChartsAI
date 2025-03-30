@@ -8,29 +8,29 @@ const TopBar = ({ toggleSidebar, isCollapsed, onOpenProfile, onOpenSettings }) =
   const { user } = useAuth()
   
   return (
-    <div className="h-16 bg-[#161616]/95 backdrop-blur-lg border-b border-white/10 
-      flex items-center justify-between px-6 relative z-50 shadow-lg">
+    <div className="h-16 bg-white border-b border-gray-200 
+      flex items-center justify-between px-6 relative z-50 shadow-sm">
       <div className="flex items-center gap-4">
         <button
           onClick={toggleSidebar}
-          className="p-2.5 hover:bg-white/5 rounded-xl text-gray-400 hover:text-gray-200 
+          className="p-2.5 hover:bg-gray-100 rounded-xl text-gray-500 hover:text-gray-700 
             transition-all duration-200 hover:scale-105 active:scale-95"
         >
           <HiMenuAlt2 size={22} />
         </button>
-        <h1 className="text-2xl font-bold bg-gradient-to-r from-gray-200 to-gray-400 
-          bg-clip-text text-transparent tracking-tight">
-          VeritazAI
-        </h1>
+      </div>
+      
+      <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 ">
+        <img src="/assets/logo.png" alt="Charts AI Logo" className="h-auto" style={{ width: "140px", height: "32px" }} />
       </div>
       
       <div className="flex items-center gap-4">
-        <span className="text-indigo-300 text-sm font-medium">{user?.username || 'User'}</span>
+        <span className="text-blue-600 text-sm font-medium">{user?.username || 'User'}</span>
         <button
           onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
-          className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-blue-600 
-            flex items-center justify-center text-white cursor-pointer hover:shadow-lg 
-            hover:shadow-indigo-500/20 transition-all duration-200 font-semibold
+          className="w-10 h-10 rounded-full bg-gray-200 
+            flex items-center justify-center text-gray-800 cursor-pointer hover:shadow-lg 
+            transition-all duration-200 font-semibold
             active:scale-95"
         >
           {user?.username?.[0]?.toUpperCase() || 'U'}
