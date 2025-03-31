@@ -73,11 +73,77 @@ const ChatArea = ({ chat, onSendMessage, isCentered, isSidebarCollapsed }) => {
       <div className="flex-1">
         {content.text && <p className="whitespace-pre-wrap mb-4">{content.text}</p>}
         {content.type === 'table' && content.data && (
-          <DataGrid 
-            data={content.data} 
-            isExpanded={expandedGrid}
-            onToggleExpand={() => setExpandedGrid(!expandedGrid)}
-          />
+          <div className="space-y-4">
+            <DataGrid 
+              data={content.data} 
+              isExpanded={expandedGrid}
+              onToggleExpand={() => setExpandedGrid(!expandedGrid)}
+            />
+            <div 
+              className="bg-gray-50 border border-gray-200 rounded-lg p-3 mt-4 flex justify-between items-center"
+              style={{ width: "878px", height: "68px" }}
+            >
+              <h3 className="text-sm font-medium text-gray-500 ml-2">Table Options</h3>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setExpandedGrid(!expandedGrid)}
+                  className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-md text-sm text-gray-700 transition-colors cursor-pointer border border-gray-200 flex items-center gap-2"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                  </svg>
+                  {expandedGrid ? 'Close Analysis' : 'Data Analysis'}
+                </button>
+                <button
+                  onClick={() => {
+                    // Function to download data as Excel
+                    if (!content.data || content.data.length === 0) return;
+                    
+                    const headers = Object.keys(content.data[0]);
+                    const tsvContent = [
+                      headers.join('\t'),
+                      ...content.data.map(row => headers.map(header => {
+                        let cell = row[header]?.toString() || '';
+                        if (cell.includes('\t') || cell.includes('\n')) {
+                          cell = `"${cell.replace(/"/g, '""')}"`;
+                        }
+                        return cell;
+                      }).join('\t'))
+                    ].join('\n');
+
+                    const blob = new Blob([tsvContent], { type: 'text/tab-separated-values;charset=utf-8;' });
+                    const link = document.createElement('a');
+                    const url = URL.createObjectURL(blob);
+                    link.setAttribute('href', url);
+                    link.setAttribute('download', 'data_export.xls');
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                  }}
+                  className="px-4 py-2 bg-blue-100 hover:bg-blue-200 text-blue-700 
+                    rounded-md text-sm transition-colors cursor-pointer border border-blue-200 flex items-center gap-2"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                  </svg>
+                  Download Excel
+                </button>
+                <button
+                  onClick={() => {
+                    console.log("Cypher query clicked");
+                    // Implement cypher query functionality here
+                  }}
+                  className="px-4 py-2 bg-purple-100 hover:bg-purple-200 text-purple-700 
+                    rounded-md text-sm transition-colors cursor-pointer border border-purple-200 flex items-center gap-2"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                  </svg>
+                  Cypher Query
+                </button>
+              </div>
+            </div>
+          </div>
         )}
         {content.followup && <p className="whitespace-pre-wrap mt-4">{content.followup}</p>}
       </div>
@@ -179,9 +245,11 @@ const ChatArea = ({ chat, onSendMessage, isCentered, isSidebarCollapsed }) => {
                 </div>
                 <div className={`p-4 rounded-xl shadow-sm whitespace-pre-wrap flex-1 text-lg ${
                   message.sender === 'user' 
-                    ? 'bg-blue-100 text-gray-800' 
-                    : 'bg-gray-100 text-gray-800 border border-gray-200'
-                }`}>
+                    ? 'bg-[#B7F8DB] text-gray-800' 
+                    : 'bg-[#99E1D9] text-gray-800 border border-gray-200'
+                }`}
+                style={message.sender === 'ai' ? { width: "1064px", minHeight: "152px" } : {}}
+                >
                   {renderMessage(message)}
                 </div>
               </div>

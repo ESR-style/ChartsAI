@@ -268,3 +268,202 @@
   flex-wrap: wrap;
   align-items: center;
 }
+
+/* Light mode theme styles for pivot table */
+.pivot-table-light {
+  width: 100%;
+  height: 100%;
+  min-height: calc(100vh - 120px);
+  display: flex;
+  flex-direction: column;
+}
+
+.pivot-table-light .pvtUi {
+  background: #ffffff;
+  color: #333333;
+  border: 1px solid #e5e7eb;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.pivot-table-light .pvtAxisContainer, 
+.pivot-table-light .pvtVals,
+.pivot-table-light .pvtRenderer,
+.pivot-table-light .pvtAggregator {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+}
+
+.pivot-table-light .pvtAxisContainer {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px;
+}
+
+.pivot-table-light .pvtRenderer,
+.pivot-table-light .pvtAggregator {
+  min-width: 200px;
+}
+
+.pivot-table-light .pvtAxisContainer li span.pvtAttr {
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  color: #111827;
+  cursor: pointer;
+  padding: 4px 8px;
+  display: inline-block;
+  width: 100%;
+  user-select: none;
+}
+
+.pivot-table-light .pvtTriangle {
+  color: #6b7280;
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.pivot-table-light select {
+  background: #ffffff;
+  color: #111827;
+  border: 1px solid #d1d5db;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+}
+
+.pivot-table-light .pvtCheckContainer {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.pivot-table-light .pvtCheckContainer p {
+  color: #111827;
+}
+
+.pivot-table-light .pvtTable {
+  border-collapse: collapse;
+  border: 1px solid #e5e7eb;
+}
+
+.pivot-table-light .pvtTable thead tr th,
+.pivot-table-light .pvtTable tbody tr th {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  color: #111827;
+}
+
+.pivot-table-light .pvtTable tbody tr td {
+  border: 1px solid #e5e7eb;
+  color: #111827;
+}
+
+.pivot-table-light .pvtTotal,
+.pivot-table-light .pvtGrandTotal {
+  background: rgba(59, 130, 246, 0.1);
+}
+
+/* Drag and drop area styling */
+.pivot-table-light .pvtUnused {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+}
+
+/* Plotly chart background */
+.pivot-table-light .js-plotly-plot {
+  background: #ffffff;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.pivot-table-light .pvtRendererArea {
+  width: 100%;
+  overflow: auto;
+}
+
+.pivot-table-light .pvtAxisContainer li span.pvtAttr {
+  -webkit-text-fill-color: #111827;
+}
+
+/* Hover states */
+.pivot-table-light .pvtAxisContainer li span.pvtAttr:hover {
+  background: #f3f4f6;
+}
+
+.pivot-table-light select:hover,
+.pivot-table-light select:focus {
+  background: #ffffff;
+  border-color: #d1d5db;
+}
+
+/* Remove PivotTable.js logo */
+.pivot-table-light .pvtUi > img {
+  display: none;
+}
+
+/* Improve dropdown menus */
+.pivot-table-light .pvtDropdown {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  padding: 4px;
+  margin-top: 4px;
+}
+
+.pivot-table-light .pvtFilterBox {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  padding: 8px;
+  z-index: 100;
+  position: fixed;
+  max-height: 70vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.pivot-table-light .pvtFilterBox input[type="text"],
+.pivot-table-light .pvtFilterBox input[type="search"] {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  color: #111827;
+  padding: 4px 8px;
+  border-radius: 4px;
+  width: 100%;
+  margin: 4px 0;
+}
+
+.pivot-table-light .pvtFilterBox input[type="checkbox"] {
+  cursor: pointer;
+  margin-right: 8px;
+}
+
+.pivot-table-light .pvtCheckContainer p label {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 2px 0;
+}
+
+/* Active states */
+.pivot-table-light .pvtAxisContainer li span.pvtAttr.pvtAttrSelected {
+  background: rgba(59, 130, 246, 0.2);
+  border-color: rgba(59, 130, 246, 0.4);
+}
+
+.pivot-table-light .pvtVals {
+  min-width: 100%;
+  padding: 12px;
+  gap: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}

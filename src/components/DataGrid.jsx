@@ -7,8 +7,7 @@ import createPlotlyRenderers from 'react-pivottable/PlotlyRenderers';
 
 const PlotlyRenderers = createPlotlyRenderers(Plot);
 
-const DataGrid = ({ data }) => {
-  const [showAnalysis, setShowAnalysis] = useState(false);
+const DataGrid = ({ data, isExpanded, onToggleExpand }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 10;
   
@@ -76,37 +75,18 @@ const DataGrid = ({ data }) => {
 
   return (
     <div className="relative">
-      <div className="flex justify-between items-center mb-4">
-        <div className="flex gap-4 items-center">
-          <button
-            onClick={() => setShowAnalysis(!showAnalysis)}
-            className="px-3 py-1 bg-white/10 hover:bg-white/20 rounded-md text-sm text-white/90 transition-colors cursor-pointer"
-          >
-            {showAnalysis ? 'Show Table' : 'Data Analysis'}
-          </button>
-          
-          <button
-            onClick={downloadExcel}
-            className="px-3 py-1 bg-blue-600/20 hover:bg-blue-600/30 text-blue-500 
-              rounded-md text-sm transition-colors cursor-pointer"
-          >
-            Download Excel
-          </button>
-        </div>
-      </div>
-
       <div className={`transition-all duration-300 ${
-        showAnalysis ? 'fixed inset-0 z-50 bg-[#161616] p-4 overflow-auto' : ''
+        isExpanded ? 'fixed inset-0 z-50 bg-white p-4 overflow-auto' : ''
       }`}>
-        <div className="bg-[#161616] text-white h-full w-full">
-          {showAnalysis ? (
+        <div className="bg-white text-gray-800 h-full w-full">
+          {isExpanded ? (
             <div className="w-full h-full">
               <PivotTableUI
                 data={data}
                 onChange={s => setPivotState(s)}
                 renderers={Object.assign({}, TableRenderers, PlotlyRenderers)}
                 {...pivotState}
-                className="pivot-table-dark"
+                className="pivot-table-light"
                 unusedOrientationCutoff={Infinity}
               />
             </div>
@@ -115,26 +95,26 @@ const DataGrid = ({ data }) => {
               {data && data.length > 0 && (
                 <>
                   <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-white/10">
+                    <table className="min-w-full divide-y divide-gray-200 border border-gray-200 rounded-lg">
                       <thead>
                         <tr>
                           {Object.keys(data[0]).map((header, index) => (
                             <th
                               key={index}
-                              className="px-4 py-3 text-left text-sm font-semibold text-white/90 bg-white/5"
+                              className="px-4 py-3 text-left text-sm font-semibold text-gray-800 bg-gray-100"
                             >
                               {header}
                             </th>
                           ))}
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-white/10">
+                      <tbody className="divide-y divide-gray-200">
                         {data.slice(startIndex, endIndex).map((row, rowIndex) => (
-                          <tr key={rowIndex} className="hover:bg-white/5">
+                          <tr key={rowIndex} className="hover:bg-gray-50">
                             {Object.keys(data[0]).map((header, colIndex) => (
                               <td
                                 key={`${rowIndex}-${colIndex}`}
-                                className="px-4 py-2 text-sm text-white/80"
+                                className="px-4 py-2 text-sm text-gray-700"
                               >
                                 {row[header]?.toString()}
                               </td>
@@ -144,27 +124,27 @@ const DataGrid = ({ data }) => {
                       </tbody>
                     </table>
                   </div>
-                  <div className="flex justify-between items-center mt-4 px-4 py-3 bg-white/5 rounded-md">
-                    <div className="text-sm text-white/80">
+                  <div className="flex justify-between items-center mt-4 px-4 py-3 bg-gray-50 rounded-md">
+                    <div className="text-sm text-gray-700">
                       Showing {startIndex + 1}-{Math.min(endIndex, data.length)} of {data.length} entries
                     </div>
                     <div className="flex gap-2">
                       <button
                         onClick={handlePrevPage}
                         disabled={currentPage === 1}
-                        className="px-3 py-1 bg-white/10 hover:bg-white/20 rounded-md text-sm text-white/90 
-                          transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-md text-sm text-gray-700 
+                          transition-colors disabled:opacity-50 disabled:cursor-not-allowed border border-gray-200"
                       >
                         Previous
                       </button>
-                      <span className="px-3 py-1 text-sm text-white/90">
+                      <span className="px-3 py-1 text-sm text-gray-700">
                         Page {currentPage} of {totalPages}
                       </span>
                       <button
                         onClick={handleNextPage}
                         disabled={currentPage === totalPages}
-                        className="px-3 py-1 bg-white/10 hover:bg-white/20 rounded-md text-sm text-white/90 
-                          transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-md text-sm text-gray-700 
+                          transition-colors disabled:opacity-50 disabled:cursor-not-allowed border border-gray-200"
                       >
                         Next
                       </button>
@@ -177,11 +157,11 @@ const DataGrid = ({ data }) => {
         </div>
       </div>
 
-      {showAnalysis && (
+      {isExpanded && (
         <button
-          onClick={() => setShowAnalysis(false)}
-          className="fixed top-6 right-6 z-50 px-3 py-1 bg-white/10 hover:bg-white/20 
-            rounded-md text-sm text-white/90 transition-colors cursor-pointer"
+          onClick={onToggleExpand}
+          className="fixed top-6 right-6 z-50 px-3 py-1 bg-gray-100 hover:bg-gray-200 
+            rounded-md text-sm text-gray-700 transition-colors cursor-pointer border border-gray-200"
         >
           Close
         </button>
