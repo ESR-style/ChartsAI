@@ -28,12 +28,13 @@ export const chatService = {
 
   async sendMessage(threadId, content, sender) {
     const response = await fetch(
-      `${API_BASE_URL}/threads/${threadId}/messages/?content=${encodeURIComponent(content)}&sender=${encodeURIComponent(sender)}`,
+      `${API_BASE_URL}/threads/${threadId}/messages/`,
       { 
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
-        }
+        },
+       body: JSON.stringify({ content, sender })
       }
     );
     
